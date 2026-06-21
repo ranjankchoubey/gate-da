@@ -3,41 +3,191 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Practice Sets</title>
+  <title>GATE DA 2026 — Practice Sets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Georgia', serif; background: #fafafa; color: #1a1a1a; line-height: 1.7; padding: 0 1rem; }
-    .page-wrap { max-width: 720px; margin: 0 auto; padding: 3rem 0 5rem; }
-    h1 { font-size: 1.8rem; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom: 1rem; margin-bottom: 2rem; }
-    h2 { font-size: 1rem; font-family: 'Courier New', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: #555; margin: 2rem 0 0.8rem; }
-    ul { list-style: none; }
-    li { margin-bottom: 0.5rem; }
-    a { color: #1a1a1a; text-decoration: none; border-bottom: 1px solid #ccc; }
-    a:hover { border-bottom-color: #1a1a1a; }
-    .meta { font-size: 0.8rem; color: #888; font-family: monospace; margin-left: 0.5rem; }
+
+    :root {
+      --accent:    #4f46e5;
+      --accent-bg: #eef2ff;
+      --text:      #0f172a;
+      --text-2:    #334155;
+      --text-3:    #64748b;
+      --text-4:    #94a3b8;
+      --bg:        #f1f5f9;
+      --surface:   #ffffff;
+      --border:    #e2e8f0;
+      --border-2:  #cbd5e1;
+      --r:         8px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      font-size: 15px;
+    }
+
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 0;
+    }
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto 0 max(2rem, calc((100vw - 1120px) * 0.3));
+      padding: 0 2rem;
+    }
+    .site-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-4);
+      margin-bottom: 0.35rem;
+    }
+    .site-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .site-desc {
+      font-size: 0.83rem;
+      color: var(--text-3);
+      margin-top: 0.3rem;
+    }
+
+    .page-layout {
+      max-width: 1120px;
+      margin: 0 auto 0 max(2rem, calc((100vw - 1120px) * 0.3));
+      padding: 2rem 2rem 6rem;
+    }
+
+    .course-block { margin-bottom: 2.5rem; }
+
+    .course-heading {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--text-4);
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lecture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .lecture-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1.1rem 1.25rem;
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.12s, box-shadow 0.12s;
+    }
+    .lecture-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-bg);
+    }
+
+    .lc-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 0.4rem;
+    }
+    .lc-meta {
+      font-size: 0.72rem;
+      color: var(--text-4);
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+    }
+    .lc-badge {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.05rem 0.4rem;
+      font-size: 0.66rem;
+      font-weight: 600;
+      color: var(--text-3);
+    }
+
+    .page-footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.71rem;
+      color: var(--text-4);
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .page-footer a { color: var(--text-4); text-decoration: none; }
+    .page-footer a:hover { color: var(--text-3); }
+
+    @media (max-width: 860px) {
+      .header-inner { margin: 0; padding: 0 1rem; }
+      .page-layout { margin: 0; padding: 1.5rem 1rem 4rem; }
+      .lecture-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .site-header { padding: 1rem 0; }
+      .site-title { font-size: 1.2rem; }
+    }
   </style>
 </head>
 <body>
-<div class="page-wrap">
-  <h1>Practice Sets</h1>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="site-label">GATE DA 2026</div>
+    <div class="site-title">Practice Sets</div>
+    <div class="site-desc">Topic-wise practice questions with answers — free to use.</div>
+  </div>
+</header>
+
+<div class="page-layout">
+
   {% for course, lectures in courses.items() %}
-  <h2>{{ course | replace('-', ' ') }}</h2>
-  <ul>
-    {% for lec in lectures %}
-    <li>
-      <a href="{{ lec.url }}">{{ lec.title }}</a>
-      <span class="meta">{{ lec.num_questions }}q</span>
-    </li>
-    {% endfor %}
-  </ul>
+  <div class="course-block">
+    <div class="course-heading">{{ course | replace('-', ' ') }}</div>
+    <div class="lecture-grid">
+      {% for lec in lectures %}
+      <a class="lecture-card" href="{{ lec.url }}">
+        <div class="lc-title">{{ lec.title }}</div>
+        <div class="lc-meta">
+          <span class="lc-badge">{{ lec.num_questions }}Q</span>
+          <span>{{ lec.slug }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
   {% endfor %}
 
-  <footer style="margin-top:3rem;padding-top:1rem;border-top:1px solid #ddd;font-size:0.78rem;color:#aaa;font-family:monospace;">
-    © 2026 <a href="https://ranjanchoubey.github.io" style="color:#aaa;">Ranjan Kumar Choubey</a>
-    &nbsp;·&nbsp;
-    <a href="https://creativecommons.org/licenses/by-nc/4.0/" style="color:#aaa;" target="_blank">CC BY-NC 4.0</a>
-    — Free to use for learning. Not for commercial redistribution.
+  <footer class="page-footer">
+    <span>© 2026 <a href="https://ranjankchoubey.github.io">Ranjan Kumar Choubey</a></span>
+    <span>·</span>
+    <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>
+    <span>·</span>
+    <span>Free to use for learning. Not for commercial redistribution.</span>
   </footer>
+
 </div>
 </body>
 </html>
