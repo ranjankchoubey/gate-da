@@ -17,6 +17,7 @@ Manifest formats supported:
         questions: [Q003, Q004]
 """
 
+import re
 import sys
 import shutil
 import subprocess

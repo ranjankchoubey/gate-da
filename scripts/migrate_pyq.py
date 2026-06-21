@@ -193,6 +193,17 @@ def clean_body(text: str) -> str:
     text = re.sub(r'\\textit\{([^}]+)\}', r'*\1*', text)
     # \rule{...}{...} (blank line in NAT) → ______
     text = re.sub(r'\\rule\{[^}]+\}\{[^}]+\}', '______', text)
+    # LaTeX text-mode accents → Unicode (must happen before markdown escapes them)
+    accent_map = {
+        '\\"a': 'ä', '\\"e': 'ë', '\\"i': 'ï', '\\"o': 'ö', '\\"u': 'ü',
+        "\\'a": 'á', "\\'e": 'é', "\\'i": 'í', "\\'o": 'ó', "\\'u": 'ú',
+        '\\`a': 'à', '\\`e': 'è', '\\`i': 'ì', '\\`o': 'ò', '\\`u': 'ù',
+        '\\^a': 'â', '\\^e': 'ê', '\\^i': 'î', '\\^o': 'ô', '\\^u': 'û',
+        '\\~n': 'ñ', '\\~a': 'ã', '\\~o': 'õ',
+        '\\c{c}': 'ç',
+    }
+    for latex_acc, uni in accent_map.items():
+        text = text.replace(latex_acc, uni)
     # Collapse 3+ blank lines
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
@@ -202,8 +213,17 @@ def convert_enumerate(text: str) -> str:
     """Convert LaTeX enumerate with lettered items to Markdown MCQ options."""
     def replace_enum(m):
         inner = m.group(1)
-        inner = re.sub(r'\\item\[\(([A-Z])\)\]\s*', r'\n- **(\1)** ', inner)
-        return inner.strip()
+        # Split on \item[(X)] markers
+        parts = re.split(r'\\item\[\(([A-Z])\)\]\s*', inner)
+        # parts = [before_A, 'A', text_A, 'B', text_B, ...]
+        options = []
+        i = 1
+        while i + 1 < len(parts):
+            letter = parts[i]
+            option_text = parts[i + 1].strip()
+            options.append(f'- **({letter})** {option_text}')
+            i += 2
+        return '\n'.join(options)
 
     text = re.sub(
         r'\\begin\{enumerate\}(?:\[[^\]]*\])?\s*([\s\S]*?)\\end\{enumerate\}',

@@ -9,14 +9,11 @@ Source: GATE DA Previous Year Questions
 [MCQ]
 [PYQ: GATE DA 2024]
 
-Given a dataset with $K$ binary-valued attributes (where $K > 2$) for a two-class classification task, the number of parameters to be estimated for learning a na\"ive Bayes classifier is
+Given a dataset with $K$ binary-valued attributes (where $K > 2$) for a two-class classification task, the number of parameters to be estimated for learning a naïve Bayes classifier is
 
 - **(A)** $2K + 1$
-  
 - **(B)** $2K + 1$
-  
 - **(C)** $2^{K+1} + 1$
-  
 - **(D)** $K^2 + 1$
 
 **Answer:** B
@@ -82,11 +79,8 @@ If $\lambda = J(u^*)$, $S_W$ is non-singular and $S_B \neq 0$, then $(u^*, \lamb
 
 Note: $\mathbb{R}$ denotes the set of real numbers.
 - **(A)** $S_W\inv S_B u^* = \lambda u^*$
-  
 - **(B)** $S_W u^* = \lambda S_B u^*$
-  
 - **(C)** $S_B S_W u^* = \lambda u^*$
-  
 - **(D)** $u^{*\top} u^* = \lambda^2$
 
 **Answer:** A

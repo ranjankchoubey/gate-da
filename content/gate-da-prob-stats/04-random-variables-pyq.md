@@ -23,11 +23,8 @@ The sample average of 50 data points is 40. The updated sample average after inc
 Suppose $X$ and $Y$ are random variables. The conditional expectation of $X$ given $Y$ is denoted by $E[X \mid Y]$. Then $E[E[X \mid Y]]$ equals
 
 - **(A)** $E[X \mid Y]$
-  
 - **(B)** $\dfrac{E[X]}{E[Y]}$
-  
 - **(C)** $E[X]$
-  
 - **(D)** $E[Y]$
 
 **Answer:** C

@@ -13,11 +13,8 @@ A random variable $X$ is said to be distributed as $\text{Bernoulli}(\theta)$, d
 
 (Recall that $\Phi(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x} e^{-t^2/2} \, dt$)
 - **(A)** $\Phi(2) - \Phi(-2)$
-    
 - **(B)** $\Phi(1) - \Phi(-1)$
-    
 - **(C)** $\Phi(3) - \Phi(-3)$
-    
 - **(D)** $\Phi(90) - \Phi(60)$
 
 **Answer:** A
@@ -46,11 +43,8 @@ $$
 $$
 where $n$ is the total number of independent coin tosses. Which of the following statements is/are correct?
 - **(A)** $E[\hat{p}] = p$
-    
 - **(B)** $E[\hat{p}] = p/n$
-    
 - **(C)** As $n$ increases, variance of $\hat{p}$ decreases
-    
 - **(D)** Variance of $\hat{p}$ does not depend on $n$
 
 **Answer:** A, C

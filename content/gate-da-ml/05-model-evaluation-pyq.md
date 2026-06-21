@@ -11,11 +11,8 @@ Source: GATE DA Previous Year Questions
 
 Consider that you are training a classifier for a 10-class classification problem.\ Each input is represented as a 512-dimensional vector.\ There are 1000 samples, out of which the first 100 will be used for testing.\ Let Leave-One-Out-Cross-Validation (LOOCV) be used for selection of the classifier model before testing.\ Which of the following options is the correct number of validation splits that will be generated?
 - **(A)** 10
-  
 - **(B)** 512
-  
 - **(C)** 900
-  
 - **(D)** 1000
 
 **Answer:** C
@@ -31,11 +28,8 @@ Consider that 20 stories of Author X and 10 stories of Author Y were kept togeth
 
 Considering X and Y as two classes, which of the following statements is/are true?
 - **(A)** Accuracy of the classifier is 11/15.
-  
 - **(B)** Precision of Class X is higher than the Precision of Class Y.
-  
 - **(C)** Recall of Class X is higher than the Recall of Class Y.
-  
 - **(D)** Accuracy of the classifier is 14/15.
 
 **Answer:** A, B

@@ -11,11 +11,8 @@ Source: GATE DA Previous Year Questions
 
 For a classification problem, Principal Component Analysis (PCA) has been used to reduce the dimensionality of a feature space from 100 to 10.\ Which of the following options is true about the angle $\theta$ between the first and the tenth principal components?
 - **(A)** $\theta = 0°$
-  
 - **(B)** $\theta = 90°$
-  
 - **(C)** $90° < \theta \leq 180°$
-  
 - **(D)** $0 < \theta < 90°$
 
 **Answer:** B
@@ -29,11 +26,8 @@ For a classification problem, Principal Component Analysis (PCA) has been used t
 
 Let $\mathbf{x}_1, \mathbf{x}_2, \mathbf{x}_3, \mathbf{x}_4, \mathbf{x}_5$ be a system of orthonormal vectors in $\mathbb{R}^{10}$.\ Consider the matrix $\mA = \mathbf{x}_1 \mathbf{x}_1^\top + \mathbf{x}_2 \mathbf{x}_2^\top + \cdots + \mathbf{x}_5 \mathbf{x}_5^\top$.\ Which of the following statements is/are correct?
 - **(A)** Singular values of $\mA$ are also its eigenvalues.
-  
 - **(B)** Singular values of $\mA$ are either 0 or 1.
-  
 - **(C)** Determinant of $\mA$ is 1.
-  
 - **(D)** $\mA$ is invertible.
 
 **Answer:** A, B

@@ -12,11 +12,8 @@ Source: GATE DA Previous Year Questions
 The number of solutions of $x_1 + x_2 + x_3 + x_4 = 12$, where $x_1, x_2, x_3, x_4$ are positive integers, is:
 
 - **(A)** 165
-  
 - **(B)** 455
-  
 - **(C)** 220
-  
 - **(D)** 330
 
 **Answer:** A

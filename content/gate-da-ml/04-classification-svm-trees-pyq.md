@@ -16,11 +16,8 @@ and the labels are given by $y_1 = y_2 = y_5 = 1$ and $y_3 = y_4 = y_6 = -1$. A 
 
 Which ONE of the following sets is a possible set of support vectors?
 - **(A)** $\{\mathbf{x}_1, \mathbf{x}_2, \mathbf{x}_5\}$
-  
 - **(B)** $\{\mathbf{x}_3, \mathbf{x}_4, \mathbf{x}_5\}$
-  
 - **(C)** $\{\mathbf{x}_4, \mathbf{x}_5\}$
-  
 - **(D)** $\{\mathbf{x}_1, \mathbf{x}_2, \mathbf{x}_3, \mathbf{x}_4\}$
 
 **Answer:** D
@@ -38,11 +35,8 @@ Class-1: $\begin{bmatrix}2\\0\end{bmatrix}$, $\begin{bmatrix}0\\2\end{bmatrix}$,
 
 Hard-margin support vector machine (SVM) formulation is solved to obtain $\mathbf{w}$ and $b$. Which of the following options is/are correct?
 - **(A)** $\mathbf{w} = \begin{bmatrix}4\\4\end{bmatrix}$ and $b = 1$
-  
 - **(B)** The number of support vectors is 3
-  
 - **(C)** The margin is $\sqrt{2}$
-  
 - **(D)** Training accuracy is 98\
 
 **Answer:** B, C

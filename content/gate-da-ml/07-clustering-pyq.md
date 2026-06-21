@@ -11,11 +11,8 @@ Source: GATE DA Previous Year Questions
 
 Euclidean distance based $k$-means clustering algorithm was run on a dataset of 100 points with $k = 3$.\ If the points $\begin{bmatrix} 1 \\ 1 \end{bmatrix}$ and $\begin{bmatrix} -1 \\ 1 \end{bmatrix}$ are both part of cluster 3, then which ONE of the following points is necessarily also part of cluster 3?
 - **(A)** $\begin{bmatrix} 0 \\ 0 \end{bmatrix}$
-  
 - **(B)** $\begin{bmatrix} 0 \\ 2 \end{bmatrix}$
-  
 - **(C)** $\begin{bmatrix} 2 \\ 0 \end{bmatrix}$
-  
 - **(D)** $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$
 
 **Answer:** D
@@ -38,11 +35,8 @@ In the following table, the Task column lists a few tasks related to machine lea
 
 Which of the following options is/are the correct matching(s)?
 - **(A)** T1:A4, T2:A3, T3:A1, T4:A2
-  
 - **(B)** T1:A2, T2:A4, T3:A1, T4:A3
-  
 - **(C)** T1:A3, T2:A4, T3:A1, T4:A2
-  
 - **(D)** T1:A2, T2:A3, T3:A4, T4:A1
 
 **Answer:** B
@@ -88,11 +82,8 @@ $$
 $$
 Which of the following statements is/are correct?
 - **(A)** Single Linkage Clustering uses DIS-1
-  
 - **(B)** Single Linkage Clustering uses DIS-2
-  
 - **(C)** Complete Linkage Clustering uses DIS-2
-  
 - **(D)** Complete Linkage Clustering uses DIS-1
 
 **Answer:** B, D
@@ -110,11 +101,8 @@ P_1 = [2, 3, -1], \quad P_2 = [3, 1, 1], \quad P_3 = [5, -2, 3], \quad P_4 = [3,
 $$
 Hierarchical Agglomerative Clustering is used to cluster the above points.\ If Manhattan Distance is used as the distance metric during clustering, which of the following options indicates the two points that will be merged first?
 - **(A)** $P_1, P_2$
-  
 - **(B)** $P_2, P_3$
-  
 - **(C)** $P_3, P_4$
-  
 - **(D)** $P_2, P_4$
 
 **Answer:** D

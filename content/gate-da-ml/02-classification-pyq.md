@@ -11,11 +11,8 @@ Source: GATE DA Previous Year Questions
 
 Consider a linear regression model with L2 regularization (Ridge Regression). Which of the following statements is correct about the effect of the regularization parameter $\lambda$?
 - **(A)** Increasing $\lambda$ decreases bias and increases variance
-  
 - **(B)** Increasing $\lambda$ decreases both bias and variance
-  
 - **(C)** Increasing $\lambda$ increases both bias and variance
-  
 - **(D)** Increasing $\lambda$ increases bias and decreases variance
 
 **Answer:** D
@@ -66,15 +63,12 @@ Match the items in Column 1 with the items in Column 2 in the following table:
 | **Column 1** | **Column 2** |
 | --- | --- |
 | (p) Principal Component Analysis | (i) Discriminative Model |
-| (q) Na\"ive Bayes Classification | (ii) Dimensionality Reduction |
+| (q) Naïve Bayes Classification | (ii) Dimensionality Reduction |
 | (r) Logistic Regression | (iii) Generative Model |
 
 - **(A)** (p)--(iii), (q)--(i), (r)--(ii)
-  
 - **(B)** (p)--(ii), (q)--(i), (r)--(iii)
-  
 - **(C)** (p)--(ii), (q)--(iii), (r)--(i)
-  
 - **(D)** (p)--(iii), (q)--(ii), (r)--(i)
 
 **Answer:** C
@@ -95,11 +89,8 @@ Figures (i), (ii), (iii), (iv) show four different 2D datasets.
 Which of the following is/are TRUE?
 
 - **(A)** (i) is linearly separable.
-  
 - **(B)** (ii) is linearly separable.
-  
 - **(C)** (iii) is linearly separable.
-  
 - **(D)** (iv) is linearly separable.
 
 **Answer:** A, D
@@ -118,11 +109,8 @@ $$
 and assigns the label red to $\mathbf{x}$ if $f(\mathbf{x}) < 0$, and green otherwise. Which of the following statements is/are correct?
 
 - **(A)** The sample $\mathbf{x} = \mathbf{0}$ is assigned the label green if $\norm{\boldsymbol{\mu}_{\text{red}}} < \norm{\boldsymbol{\mu}_{\text{green}}}$
-  
 - **(B)** $f$ is a linear function of $\mathbf{x}$
-  
 - **(C)** $f(\mathbf{x}) = \mathbf{w}^\top\mathbf{x} + b$, where $\mathbf{w}$ and $b$ are functions of $\boldsymbol{\mu}_{\text{red}}$ and $\boldsymbol{\mu}_{\text{green}}$
-  
 - **(D)** $f$ is a quadratic polynomial in $\mathbf{x}$
 
 **Answer:** B, C

@@ -14,11 +14,8 @@ Three fair coins are tossed independently. $T$ is the event that two or more tos
 What is the probability of the event $T \cap S$?
 
 - **(A)** 0
-
 - **(B)** 0.5
-
 - **(C)** 0.25
-
 - **(D)** 1
 
 **Answer:** A

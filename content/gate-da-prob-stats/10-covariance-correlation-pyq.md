@@ -26,11 +26,8 @@ E[X] = 1, \quad E[(X - E[X])Z] = -2, \quad E[(X - E[X])^2] = 4
 $$
 The values of $a, b$ are:
 - **(A)** $a = -2, b = 1$
-    
 - **(B)** $a = 2, b = -1$
-    
 - **(C)** $a = -2, b = -1$
-    
 - **(D)** $a = 1, b = 1$
 
 **Answer:** A
@@ -44,11 +41,8 @@ The values of $a, b$ are:
 
 Let $X$ and $Y$ be two independent random variables. $X$ follows $\text{Bernoulli}(p = 0.3)$ distribution and $Y$ follows $\text{Normal}(\mu = 0, \sigma^2 = 100)$ distribution. Which of the following options is the variance of $(2X - 1)Y$?
 - **(A)** 100
-    
 - **(B)** 90
-    
 - **(C)** 49
-    
 - **(D)** 21
 
 **Answer:** A
