@@ -16,7 +16,7 @@ practice/
 │           └── q014-table.png
 ├── lectures/
 │   └── gate-da-prob-stats/
-│       └── 01-counting-basics.yaml             ← lecture manifest
+│       └── 01-counting-combinatorics.yaml      ← lecture manifest
 ├── scripts/
 │   └── generate.py                             ← run this to rebuild
 └── docs/                                       ← generated output (GitHub Pages)

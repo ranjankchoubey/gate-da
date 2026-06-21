@@ -21,17 +21,17 @@ Auto-generated from a Markdown question bank, deployed to GitHub Pages.
 ```
 content/
   gate-da-prob-stats/
-    01-counting-combinatorics-demo.md   ← question bank (## Q001 delimited)
+    01-counting-combinatorics.md        ← question bank (## Q001 delimited)
     img/                                ← images referenced in questions
   gate-da-ml/
-    01-linear-regression.md
+    01-regression.md
     ...
 
 lectures/
   gate-da-prob-stats/
-    01-counting-basics.yaml             ← one file per lecture (sections + Q IDs)
+    01-counting-combinatorics.yaml      ← one file per lecture (sections + Q IDs)
   gate-da-ml/
-    01-linear-regression.yaml
+    01-regression.yaml
 
 scripts/
   parse.py                              ← parses & validates question bank
@@ -106,7 +106,7 @@ sections:
 ```bash
 pip install -r requirements.txt
 python3 scripts/generate.py
-# Preview: open docs/gate-da-prob-stats/lecture/01-counting-basics/index.html
+# Preview: open docs/gate-da-prob-stats/lecture/01-counting-combinatorics/index.html
 ```
 
 PDF generation requires Playwright (runs automatically in CI):
