@@ -3,7 +3,7 @@
 Distraction-free practice sets for GATE Data Science & AI preparation.
 Auto-generated from a Markdown question bank, deployed to GitHub Pages.
 
-**Live site:** https://ranjankchoubey.github.io/gate/
+**Live site:** https://ranjankchoubey.github.io/gate-da/
 
 ---
 
@@ -126,4 +126,4 @@ git commit -m "add questions"
 git push
 ```
 
-Site updates at: https://ranjankchoubey.github.io/gate/
+Site updates at: https://ranjankchoubey.github.io/gate-da/
