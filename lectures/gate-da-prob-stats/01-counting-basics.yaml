@@ -4,11 +4,27 @@ slug: 01-counting-basics
 date: "2026-06-21"
 
 description: >
-  Fundamental counting principles — multiplication rule, ordered pairs,
-  and combinatorial reasoning. (Cengage demo questions)
+  Fundamental counting principles — multiplication rule, permutations,
+  and combinations with GATE-level practice questions.
 
-questions:
-  - Q001
-  - Q002
-  - Q003
-  - Q004
+sections:
+  - heading: "Product Rule & Multiplication Principle"
+    questions:
+      - Q001
+      - Q002
+      - Q003
+      - Q004
+
+  - heading: "Permutations"
+    questions:
+      - Q005
+      - Q006
+      - Q007
+      - Q008
+
+  - heading: "Combinations"
+    questions:
+      - Q009
+      - Q010
+      - Q011
+      - Q012

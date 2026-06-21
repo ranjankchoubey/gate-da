@@ -40,6 +40,21 @@
       margin-top: 3pt;
     }
 
+    /* Section headings in print */
+    .pdf-section-heading {
+      font-size: 8pt;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #555;
+      border-bottom: 0.5pt solid #ccc;
+      padding-bottom: 4pt;
+      margin: 18pt 0 12pt;
+    }
+    .pdf-section-heading:first-of-type {
+      margin-top: 0;
+    }
+
     .question-item {
       margin-bottom: 22pt;
       page-break-inside: avoid;
@@ -58,9 +73,6 @@
     .q-body pre { background: #f4f4f4; padding: 8pt; font-size: 9pt; margin-bottom: 6pt; }
     .q-body table { border-collapse: collapse; width: 100%; font-size: 9.5pt; }
     .q-body th, .q-body td { border: 0.5pt solid #bbb; padding: 3pt 6pt; }
-
-    /* No solution in print — students work it out */
-    .solution-wrap { display: none; }
 
     .pdf-footer {
       position: fixed;
@@ -82,14 +94,19 @@
   <h1 class="pdf-title">{{ title }}</h1>
 </div>
 
-<ol style="list-style: none;">
-  {% for q in questions %}
-  <li class="question-item">
-    <div class="q-number">Question {{ loop.index }}</div>
+{% set ns = namespace(qnum=0) %}
+{% for section in sections %}
+  {% if section.heading %}
+  <div class="pdf-section-heading">{{ section.heading }}</div>
+  {% endif %}
+  {% for q in section.questions %}
+  {% set ns.qnum = ns.qnum + 1 %}
+  <div class="question-item">
+    <div class="q-number">Question {{ ns.qnum }}</div>
     <div class="q-body">{{ q.body | markdown }}</div>
-  </li>
+  </div>
   {% endfor %}
-</ol>
+{% endfor %}
 
 <div class="pdf-footer">© 2026 Ranjan Kumar Choubey · CC BY-NC 4.0 · {{ course }} · {{ slug }} · ranjanchoubey.github.io/practice-sets</div>
 

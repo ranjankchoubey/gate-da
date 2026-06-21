@@ -4,6 +4,17 @@ generate.py — Practice Set Generator
 Reads lecture manifests from lectures/**/*.yaml,
 resolves questions from registry,
 renders HTML + PDF + QR into docs/{course}/lecture/{slug}/
+
+Manifest formats supported:
+  Flat (backward-compat):
+    questions: [Q001, Q002, ...]
+
+  Sectioned (progressive teaching):
+    sections:
+      - heading: "Product Rule"
+        questions: [Q001, Q002]
+      - heading: "Permutations"
+        questions: [Q003, Q004]
 """
 
 import sys
@@ -36,6 +47,14 @@ SITE_BASE_URL = "https://ranjanchoubey.github.io/practice-sets"
 def load_manifest(yaml_file: Path) -> dict:
     with open(yaml_file) as f:
         return yaml.safe_load(f)
+
+
+def normalize_sections(manifest: dict) -> list:
+    """Normalize manifest to sections list.
+    Backward-compat: flat questions: [...] → single unnamed section."""
+    if "sections" in manifest:
+        return manifest["sections"]
+    return [{"heading": None, "questions": manifest.get("questions", [])}]
 
 
 def render_html(template_name: str, context: dict, env: Environment) -> str:
@@ -95,15 +114,26 @@ def process_lecture(manifest: dict, registry: dict, env: Environment):
     course = manifest["course"]
     slug = manifest["slug"]
     title = manifest["title"]
-    question_ids = manifest["questions"]
+    raw_sections = normalize_sections(manifest)
 
-    # Resolve questions — fail on missing
-    questions = []
-    for qid in question_ids:
-        if qid not in registry:
-            print(f"  [ERROR] {slug}: question {qid} not found in registry", file=sys.stderr)
-            sys.exit(1)
-        questions.append(registry[qid])
+    # Resolve questions per section — fail on missing
+    sections = []
+    total_questions = 0
+    for sec in raw_sections:
+        resolved = []
+        for qid in sec.get("questions", []):
+            if qid not in registry:
+                print(f"  [ERROR] {slug}: question {qid} not found in registry", file=sys.stderr)
+                sys.exit(1)
+            resolved.append(registry[qid])
+        sections.append({
+            "heading": sec.get("heading"),
+            "questions": resolved,
+        })
+        total_questions += len(resolved)
+
+    # has_sections: True if multiple sections, or single section with a heading
+    has_sections = len(sections) > 1 or (len(sections) == 1 and bool(sections[0]["heading"]))
 
     # Output directory
     out_dir = DOCS_DIR / course / "lecture" / slug
@@ -113,36 +143,26 @@ def process_lecture(manifest: dict, registry: dict, env: Environment):
     pdf_filename = f"{slug}.pdf"
     qr_filename = "qr.png"
 
+    context = {
+        "title": title,
+        "course": course,
+        "slug": slug,
+        "sections": sections,
+        "has_sections": has_sections,
+        "canonical_url": canonical_url,
+        "pdf_filename": pdf_filename,
+        "qr_filename": qr_filename,
+        "num_questions": total_questions,
+    }
+
     # Render HTML
-    html_content = render_html(
-        "lecture.html",
-        {
-            "title": title,
-            "course": course,
-            "slug": slug,
-            "questions": questions,
-            "canonical_url": canonical_url,
-            "pdf_filename": pdf_filename,
-            "qr_filename": qr_filename,
-            "num_questions": len(questions),
-        },
-        env,
-    )
+    html_content = render_html("lecture.html", context, env)
     html_file = out_dir / "index.html"
     html_file.write_text(html_content, encoding="utf-8")
     print(f"  [HTML] {html_file.relative_to(BASE)}", file=sys.stderr)
 
     # Render PDF HTML (print-optimized, no nav)
-    pdf_html_content = render_html(
-        "lecture-print.html",
-        {
-            "title": title,
-            "course": course,
-            "slug": slug,
-            "questions": questions,
-        },
-        env,
-    )
+    pdf_html_content = render_html("lecture-print.html", context, env)
     pdf_html_file = out_dir / "_print.html"
     pdf_html_file.write_text(pdf_html_content, encoding="utf-8")
 
@@ -159,7 +179,7 @@ def process_lecture(manifest: dict, registry: dict, env: Environment):
         "slug": slug,
         "title": title,
         "url": canonical_url,
-        "num_questions": len(questions),
+        "num_questions": total_questions,
     }
 
 

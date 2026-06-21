@@ -10,14 +10,12 @@ Source: Cengage — Discrete Mathematics Practice Questions
 
 In a class, there are 15 boys and 10 girls. How many ways can a teacher select 1 boy and 1 girl to represent the class at a seminar?
 
-A. 25
-B. 100
-C. 150
-D. 250
+- **(A)** 25
+- **(B)** 100
+- **(C)** 150
+- **(D)** 250
 
 **Answer:** C
-
-**Solution:** By the multiplication principle: $15 \times 10 = 150$
 
 ---
 
@@ -29,8 +27,6 @@ If $x < 4 < y$ and $x, y \in \{1, 2, 3, \ldots, 10\}$, find the number of ordere
 
 **Answer:** 18
 
-**Solution:** $x$ can be $1, 2, 3$ (3 choices). $y$ can be $5, 6, 7, 8, 9, 10$ (6 choices). Total $= 3 \times 6 = 18$.
-
 ---
 
 ## Q003
@@ -40,8 +36,6 @@ If $x < 4 < y$ and $x, y \in \{1, 2, 3, \ldots, 10\}$, find the number of ordere
 Poor Dolly's TV has only 4 channels, all quite boring. She switches channel after every one minute. Find the number of ways she can change channels so that she is back to her original channel for the **first time** after 4 minutes.
 
 **Answer:** 12
-
-**Solution:** At each step she has 3 choices (any channel except current). Total sequences of length 4 returning to start $= 3^4/4 \cdot \ldots$ Using inclusion-exclusion: sequences returning at step 4 for first time $= 12$.
 
 ---
 
@@ -59,9 +53,109 @@ A dice is rolled $n$ times. Find the number of outcomes if:
 
 **Answer:** (i) $5^n$ (ii) $6^n - 5^n$ (iii) $3^n$
 
-**Solution:**
-- (i) Each roll has 5 choices (1–5), so $5^n$
-- (ii) Total $-$ (6 never appears) $= 6^n - 5^n$
-- (iii) Even faces are $\{2, 4, 6\}$, each roll has 3 choices, so $3^n$
+---
+
+## Q005
+
+[MCQ]
+
+How many 3-digit numbers can be formed using digits $\{1, 2, 3, 4, 5, 6, 7\}$ if no digit is repeated?
+
+- **(A)** 35
+- **(B)** 105
+- **(C)** 210
+- **(D)** 343
+
+**Answer:** C
+
+---
+
+## Q006
+
+[NAT]
+
+In how many distinct ways can 5 students be seated in a row of 5 chairs?
+
+**Answer:** 120
+
+---
+
+## Q007
+
+[MCQ]
+
+How many 4-letter words (with or without meaning) can be formed using the letters of the word **GATE**, using each letter exactly once?
+
+- **(A)** 12
+- **(B)** 16
+- **(C)** 24
+- **(D)** 48
+
+**Answer:** C
+
+---
+
+## Q008
+
+[NAT]
+
+There are 8 points in a plane, no three of which are collinear. How many straight lines can be drawn through any two of these points?
+
+**Answer:** 28
+
+---
+
+## Q009
+
+[MCQ]
+
+A committee of 4 is to be formed from 6 men and 5 women such that there are at least 2 women. How many such committees are possible?
+
+- **(A)** 185
+- **(B)** 210
+- **(C)** 220
+- **(D)** 195
+
+**Answer:** A
+
+---
+
+## Q010
+
+[NAT]
+
+A bag contains 5 red balls and 4 blue balls. In how many ways can 2 red and 2 blue balls be selected?
+
+**Answer:** 60
+
+---
+
+## Q011
+
+[MSQ]
+
+Which of the following identities are correct? (Select all that apply)
+
+- **(A)** $\binom{n}{r} = \binom{n}{n-r}$
+- **(B)** $\binom{n}{0} = 1$
+- **(C)** $\binom{n}{r} + \binom{n}{r+1} = \binom{n+1}{r+1}$
+- **(D)** $\binom{n}{r} = n \cdot \binom{n-1}{r}$
+
+**Answer:** A, B, C
+
+---
+
+## Q012
+
+[MCQ]
+
+In how many ways can the letters of the word **MISSISSIPPI** be arranged?
+
+- **(A)** $\dfrac{11!}{4!\,4!\,2!}$
+- **(B)** $\dfrac{11!}{4!\,4!\,2!\,1!}$
+- **(C)** $11!$
+- **(D)** $\dfrac{11!}{4!}$
+
+**Answer:** A
 
 ---

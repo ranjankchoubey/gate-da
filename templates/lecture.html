@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ title }}</title>
   <link rel="canonical" href="{{ canonical_url }}" />
-  <!-- MathJax v3 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     MathJax = {
       tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
@@ -16,205 +18,536 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --accent:      #4f46e5;
+      --accent-bg:   #eef2ff;
+      --green:       #16a34a;
+      --green-bg:    #f0fdf4;
+      --text:        #0f172a;
+      --text-2:      #334155;
+      --text-3:      #64748b;
+      --text-4:      #94a3b8;
+      --bg:          #f1f5f9;
+      --surface:     #ffffff;
+      --border:      #e2e8f0;
+      --border-2:    #cbd5e1;
+      --r:           8px;
+    }
+
     body {
-      font-family: 'Georgia', serif;
-      background: #fafafa;
-      color: #1a1a1a;
-      line-height: 1.7;
-      padding: 0 1rem;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      font-size: 15px;
     }
 
-    .page-wrap {
-      max-width: 720px;
+    /* ─────────────────────────────────────
+       HEADER
+    ───────────────────────────────────── */
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+    }
+    .header-inner {
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 3rem 0 5rem;
+    }
+    .breadcrumb {
+      font-size: 0.72rem;
+      color: var(--text-4);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .bc-sep { color: var(--border-2); }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.25;
+      margin-bottom: 0.9rem;
     }
 
-    /* Header */
-    .lecture-header {
-      border-bottom: 2px solid #1a1a1a;
-      padding-bottom: 1rem;
-      margin-bottom: 2.5rem;
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
     }
-    .lecture-label {
+    .header-meta {
       font-size: 0.78rem;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .meta-dot { color: var(--border-2); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.77rem;
+      font-weight: 500;
+      font-family: inherit;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.12s;
+      white-space: nowrap;
+    }
+    .btn-solid {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid var(--accent);
+    }
+    .btn-solid:hover { background: #4338ca; border-color: #4338ca; }
+    .btn-outline {
+      background: transparent;
+      color: var(--text-3);
+      border: 1px solid var(--border-2);
+    }
+    .btn-outline:hover { color: var(--text-2); border-color: var(--text-4); background: var(--bg); }
+
+    /* ─────────────────────────────────────
+       PAGE LAYOUT
+    ───────────────────────────────────── */
+    .page-layout {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 2rem 2rem 6rem;
+    }
+    .page-layout.with-sidebar {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    .page-layout:not(.with-sidebar) .main-content {
+      max-width: 740px;
+    }
+
+    /* ─────────────────────────────────────
+       SIDEBAR
+    ───────────────────────────────────── */
+    .sidebar {
+      position: sticky;
+      top: 1.5rem;
+    }
+    .sidebar-group { margin-bottom: 1.5rem; }
+    .sidebar-group-label {
+      font-size: 0.62rem;
+      font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #666;
-      font-family: 'Courier New', monospace;
+      color: var(--text-4);
+      padding: 0 0.5rem;
+      margin-bottom: 0.4rem;
     }
-    .lecture-title {
-      font-size: 1.6rem;
-      font-weight: normal;
-      margin-top: 0.3rem;
+    .nav-link {
+      display: flex;
+      align-items: center;
+      font-size: 0.81rem;
+      color: var(--text-3);
+      text-decoration: none;
+      padding: 0.38rem 0.5rem;
+      border-radius: 6px;
+      border-left: 2px solid transparent;
+      transition: color 0.1s, background 0.1s, border-color 0.1s;
+      line-height: 1.35;
+      margin-bottom: 0.05rem;
     }
-    .lecture-meta {
-      font-size: 0.82rem;
-      color: #888;
-      margin-top: 0.4rem;
+    .nav-link:hover {
+      color: var(--text-2);
+      background: var(--border);
+      border-left-color: var(--border-2);
+    }
+    .nav-link.active {
+      color: var(--accent);
+      font-weight: 600;
+      background: var(--accent-bg);
+      border-left-color: var(--accent);
+    }
+    .sidebar-hr { height: 1px; background: var(--border); margin: 0.85rem 0; }
+
+    /* ─────────────────────────────────────
+       MAIN CONTENT
+    ───────────────────────────────────── */
+    .main-content { min-width: 0; }
+
+    /* Section group */
+    .section-group + .section-group { margin-top: 2.75rem; }
+
+    .section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--text-4);
+      margin-bottom: 0.85rem;
+      scroll-margin-top: 1.5rem;
     }
 
-    /* Actions bar */
-    .actions {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2.5rem;
-      align-items: center;
+    /* Question list */
+    .q-list { list-style: none; display: flex; flex-direction: column; gap: 0.9rem; }
+
+    .q-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1.4rem 1.65rem;
     }
-    .btn {
-      display: inline-block;
-      padding: 0.4rem 1rem;
-      font-size: 0.82rem;
-      font-family: 'Courier New', monospace;
-      border: 1px solid #333;
-      color: #333;
-      text-decoration: none;
-      cursor: pointer;
-      background: white;
+
+    .q-top {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 0.8rem;
+    }
+    .q-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-4);
       letter-spacing: 0.04em;
     }
-    .btn:hover { background: #1a1a1a; color: white; }
-
-    /* QR */
-    .qr-block { text-align: center; margin-bottom: 2rem; }
-    .qr-block img { width: 120px; height: 120px; }
-    .qr-block p { font-size: 0.75rem; color: #888; margin-top: 0.4rem; font-family: monospace; }
-
-    /* Questions */
-    .questions { list-style: none; }
-
-    .question-item {
-      margin-bottom: 2.5rem;
-      padding-bottom: 2.5rem;
-      border-bottom: 1px solid #ddd;
+    .q-tag {
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      background: var(--bg);
     }
-    .question-item:last-child { border-bottom: none; }
+    .q-tag.nat  { color: #92400e; border-color: #fde68a; background: #fffbeb; }
+    .q-tag.msq  { color: #065f46; border-color: #6ee7b7; background: #f0fdf4; }
+    .q-tag.subj { color: #9d174d; border-color: #f9a8d4; background: #fdf2f8; }
+    .q-tag.code { color: #1e40af; border-color: #bfdbfe; background: #eff6ff; }
 
-    .q-number {
-      font-size: 0.75rem;
+    /* Question body */
+    .q-body {
+      font-size: 0.95rem;
+      line-height: 1.78;
+      color: var(--text-2);
+    }
+    .q-body p { margin-bottom: 0.55rem; }
+    .q-body p:last-child { margin-bottom: 0; }
+
+    /* MCQ options — unordered list without bullets */
+    .q-body ul {
+      list-style: none;
+      margin: 0.5rem 0 0.6rem;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.2rem 2rem;
+    }
+    .q-body ul li {
+      font-size: 0.92rem;
+      padding: 0.18rem 0;
+      color: var(--text-2);
+    }
+
+    /* Ordered lists (numbered sub-parts) */
+    .q-body ol { margin-left: 1.4rem; margin-bottom: 0.55rem; }
+    .q-body ol li { margin-bottom: 0.2rem; }
+
+    .q-body code {
       font-family: 'Courier New', monospace;
+      background: #f1f5f9;
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+      font-size: 0.87em;
+    }
+    .q-body pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1rem 1.2rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+      font-size: 0.83rem;
+      line-height: 1.55;
+    }
+    .q-body table { border-collapse: collapse; width: 100%; margin: 0.75rem 0; font-size: 0.88rem; }
+    .q-body th { background: var(--bg); font-weight: 600; color: var(--text); }
+    .q-body th, .q-body td { border: 1px solid var(--border); padding: 0.38rem 0.7rem; text-align: left; }
+    .q-body strong { font-weight: 600; color: var(--text); }
+    .q-body em { font-style: italic; }
+
+    /* ─────────────────────────────────────
+       ANSWER TOGGLE
+    ───────────────────────────────────── */
+    .ans-wrap {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .ans-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.76rem;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--text-3);
+      cursor: pointer;
+      border: 1px solid var(--border-2);
+      background: transparent;
+      padding: 0.3rem 0.72rem;
+      border-radius: 6px;
+      transition: all 0.12s;
+    }
+    .ans-btn:hover  { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+    .ans-btn.open   { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+
+    .ans-chevron { font-size: 0.55rem; transition: transform 0.15s; display: inline-block; }
+    .ans-btn.open .ans-chevron { transform: rotate(90deg); }
+
+    .ans-body {
+      display: none;
+      margin-top: 0.6rem;
+      padding: 0.55rem 0.9rem;
+      background: var(--green-bg);
+      border-radius: 6px;
+    }
+    .ans-body.visible { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+    .ans-label {
+      font-size: 0.62rem;
+      font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #888;
-      margin-bottom: 0.6rem;
+      color: #15803d;
+      opacity: 0.65;
+      flex-shrink: 0;
+    }
+    .ans-value {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--green);
     }
 
-    .q-body { font-size: 1rem; }
-    .q-body p { margin-bottom: 0.6rem; }
-    .q-body ul, .q-body ol { margin-left: 1.5rem; margin-bottom: 0.6rem; }
-    .q-body code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 0.1em 0.3em; border-radius: 2px; }
-    .q-body pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; margin-bottom: 0.8rem; }
-    .q-body table { border-collapse: collapse; width: 100%; margin-bottom: 0.8rem; }
-    .q-body th, .q-body td { border: 1px solid #ccc; padding: 0.4rem 0.8rem; }
-
-    /* Solution toggle */
-    .solution-wrap { margin-top: 1rem; }
-    .solution-toggle {
-      font-size: 0.78rem;
-      font-family: 'Courier New', monospace;
-      color: #555;
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-      letter-spacing: 0.05em;
-    }
-    .solution-toggle:hover { color: #1a1a1a; text-decoration: underline; }
-    .solution-body {
-      display: none;
-      margin-top: 0.8rem;
-      padding: 0.8rem 1rem;
-      background: #f8f8f8;
-      border-left: 3px solid #aaa;
-      font-size: 0.9rem;
-    }
-    .solution-body.visible { display: block; }
-    .answer-line {
-      font-weight: bold;
-      margin-bottom: 0.4rem;
-      font-family: 'Courier New', monospace;
-      font-size: 0.85rem;
-    }
-
-    /* Footer */
+    /* ─────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────── */
     .page-footer {
-      margin-top: 4rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #ddd;
-      font-size: 0.78rem;
-      color: #aaa;
-      font-family: monospace;
+      margin-top: 3.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.71rem;
+      color: var(--text-4);
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .page-footer a { color: var(--text-4); text-decoration: none; }
+    .page-footer a:hover { color: var(--text-3); }
+
+    /* ─────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────── */
+    @media (max-width: 860px) {
+      .page-layout,
+      .page-layout.with-sidebar {
+        display: block;
+        padding: 0 0 4rem;
+      }
+      .sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 0.4rem;
+        overflow-x: auto;
+        padding: 0.55rem 1rem;
+        scrollbar-width: none;
+      }
+      .sidebar::-webkit-scrollbar { display: none; }
+      .sidebar-group,
+      .sidebar-group-label,
+      .sidebar-hr { display: none; }
+      .sidebar-group:first-child { display: contents; }
+      .nav-link {
+        white-space: nowrap;
+        flex-shrink: 0;
+        border-left: none;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0.22rem 0.7rem;
+        font-size: 0.74rem;
+      }
+      .nav-link:hover { background: var(--bg); border-color: var(--border-2); }
+      .nav-link.active {
+        background: var(--accent-bg);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .main-content {
+        padding: 1.5rem 1rem 0;
+        max-width: 100% !important;
+      }
+      .section-label { scroll-margin-top: 3.5rem; }
+      .q-body ul { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .site-header { padding: 1rem; }
+      .page-title { font-size: 1.2rem; }
+      .q-card { padding: 1rem 1.1rem; }
     }
   </style>
 </head>
 <body>
-<div class="page-wrap">
 
-  <header class="lecture-header">
-    <div class="lecture-label">{{ course | replace('-', ' ') | upper }} · Practice Set</div>
-    <h1 class="lecture-title">{{ title }}</h1>
-    <div class="lecture-meta">{{ num_questions }} question{% if num_questions != 1 %}s{% endif %}</div>
-  </header>
-
-  <div class="actions">
-    <a class="btn" href="{{ pdf_filename }}" download>↓ Download PDF</a>
-    <button class="btn" onclick="toggleAllSolutions()">Show / Hide Solutions</button>
+<!-- ── Header ── -->
+<header class="site-header">
+  <div class="header-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <span>GATE DA 2026</span>
+      <span class="bc-sep">›</span>
+      <span>{{ course | replace('-', ' ') | title }}</span>
+      <span class="bc-sep">›</span>
+      <span>Practice Set</span>
+    </nav>
+    <h1 class="page-title">{{ title }}</h1>
+    <div class="header-row">
+      <span class="header-meta">
+        <span>{{ num_questions }} questions</span>
+        <span class="meta-dot">·</span>
+        <span>Answers included</span>
+      </span>
+      <a class="btn btn-solid" href="{{ pdf_filename }}" download>↓ Download PDF</a>
+      <button class="btn btn-outline" onclick="toggleAllAnswers()">Show / Hide All Answers</button>
+    </div>
   </div>
+</header>
 
-  {% if qr_filename %}
-  <div class="qr-block">
-    <img src="{{ qr_filename }}" alt="QR Code for this practice set" />
-    <p>Scan to open on mobile</p>
-  </div>
+<!-- ── Body ── -->
+<div class="page-layout{% if has_sections %} with-sidebar{% endif %}">
+
+  <!-- Sidebar -->
+  {% if has_sections %}
+  <nav class="sidebar" aria-label="Sections">
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Sections</div>
+      {% for section in sections %}
+      {% if section.heading %}
+      <a class="nav-link" href="#section-{{ loop.index }}">{{ section.heading }}</a>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <div class="sidebar-hr"></div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Resources</div>
+      <a class="nav-link" href="{{ pdf_filename }}" download>↓ Download PDF</a>
+      {% if qr_filename %}<a class="nav-link" href="{{ qr_filename }}" target="_blank">⊞ QR Code</a>{% endif %}
+    </div>
+  </nav>
   {% endif %}
 
-  <ol class="questions">
-    {% for q in questions %}
-    <li class="question-item">
-      <div class="q-number">Question {{ loop.index }}</div>
-      <div class="q-body">{{ q.body | markdown }}</div>
+  <!-- Main -->
+  <main class="main-content">
 
-      {% if q.answer or q.solution %}
-      <div class="solution-wrap">
-        <button class="solution-toggle" onclick="toggleSolution(this)">▶ Show solution</button>
-        <div class="solution-body">
-          {% if q.answer %}
-          <div class="answer-line">Answer: {{ q.answer }}</div>
-          {% endif %}
-          {% if q.solution %}
-          <div>{{ q.solution | markdown }}</div>
-          {% endif %}
-        </div>
-      </div>
+    {% set ns = namespace(qnum=0) %}
+    {% for section in sections %}
+    <div class="section-group">
+      {% if section.heading %}
+      <div class="section-label" id="section-{{ loop.index }}">{{ section.heading }}</div>
       {% endif %}
-    </li>
+      <ol class="q-list">
+        {% for q in section.questions %}
+        {% set ns.qnum = ns.qnum + 1 %}
+        <li class="q-card">
+          <div class="q-top">
+            <span class="q-num">{{ ns.qnum }}</span>
+            <span class="q-tag {{ q.type | lower }}">{{ q.type }}</span>
+          </div>
+          <div class="q-body">{{ q.body | markdown }}</div>
+
+          {% if q.answer %}
+          <div class="ans-wrap">
+            <button class="ans-btn" onclick="toggleAnswer(this)">
+              <span class="ans-chevron">▶</span>
+              <span class="ans-text">Show Answer</span>
+            </button>
+            <div class="ans-body">
+              <span class="ans-label">Answer</span>
+              <span class="ans-value">{{ q.answer }}</span>
+            </div>
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
     {% endfor %}
-  </ol>
 
-  <footer class="page-footer">
-    © 2026 <a href="https://ranjanchoubey.github.io" style="color:#aaa;">Ranjan Kumar Choubey</a>
-    &nbsp;·&nbsp;
-    <a href="https://creativecommons.org/licenses/by-nc/4.0/" style="color:#aaa;" target="_blank">CC BY-NC 4.0</a>
-    &nbsp;·&nbsp; {{ course }} · {{ slug }}
-  </footer>
+    <footer class="page-footer">
+      <span>© 2026 <a href="https://ranjanchoubey.github.io">Ranjan Kumar Choubey</a></span>
+      <span>·</span>
+      <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>
+      <span>·</span>
+      <span>{{ course }} / {{ slug }}</span>
+    </footer>
 
+  </main>
 </div>
 
 <script>
-function toggleSolution(btn) {
+function toggleAnswer(btn) {
   const body = btn.nextElementSibling;
-  body.classList.toggle('visible');
-  btn.textContent = body.classList.contains('visible') ? '▼ Hide solution' : '▶ Show solution';
+  const chevron = btn.querySelector('.ans-chevron');
+  const text = btn.querySelector('.ans-text');
+  const isOpen = body.classList.toggle('visible');
+  btn.classList.toggle('open', isOpen);
+  chevron.style.transform = isOpen ? 'rotate(90deg)' : '';
+  text.textContent = isOpen ? 'Hide Answer' : 'Show Answer';
 }
-function toggleAllSolutions() {
-  const all = document.querySelectorAll('.solution-body');
+
+function toggleAllAnswers() {
+  const all = document.querySelectorAll('.ans-body');
   const anyHidden = [...all].some(el => !el.classList.contains('visible'));
   all.forEach(el => el.classList.toggle('visible', anyHidden));
-  document.querySelectorAll('.solution-toggle').forEach(btn => {
-    const body = btn.nextElementSibling;
-    btn.textContent = body.classList.contains('visible') ? '▼ Hide solution' : '▶ Show solution';
+  document.querySelectorAll('.ans-btn').forEach(btn => {
+    const isOpen = btn.nextElementSibling.classList.contains('visible');
+    btn.classList.toggle('open', isOpen);
+    btn.querySelector('.ans-chevron').style.transform = isOpen ? 'rotate(90deg)' : '';
+    btn.querySelector('.ans-text').textContent = isOpen ? 'Hide Answer' : 'Show Answer';
   });
 }
+
+// Scrollspy
+(function () {
+  const labels = document.querySelectorAll('.section-label[id]');
+  const links  = document.querySelectorAll('.nav-link[href^="#section"]');
+  if (!labels.length || !links.length) return;
+
+  links[0].classList.add('active');
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+      }
+    });
+  }, { rootMargin: '-5% 0px -80% 0px' });
+
+  labels.forEach(h => obs.observe(h));
+})();
 </script>
 </body>
 </html>
