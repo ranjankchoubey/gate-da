@@ -28,6 +28,14 @@
       padding-bottom: 8pt;
       margin-bottom: 20pt;
     }
+    .pdf-brand {
+      font-size: 14pt;
+      font-weight: bold;
+      font-family: 'Georgia', serif;
+      letter-spacing: 0.05em;
+      color: #111;
+      margin-bottom: 2pt;
+    }
     .pdf-label {
       font-size: 8pt;
       letter-spacing: 0.1em;
@@ -130,6 +138,7 @@
 <body>
 
 <div class="pdf-header">
+  <div class="pdf-brand">GATE DA</div>
   <div class="pdf-label">{{ course_name | upper }} · Practice Set</div>
   <h1 class="pdf-title">{{ title }}</h1>
 </div>
@@ -169,7 +178,7 @@
 </div>
 {% endif %}
 
-<div class="pdf-footer">© 2026 Ranjan Kumar Choubey · {{ course }} · {{ slug }} · ranjankchoubey.github.io/gate-da</div>
+<div class="pdf-footer">GATE DA · © Ranjan Kumar Choubey · ranjankchoubey.github.io/gate-da</div>
 
 </body>
 </html>
