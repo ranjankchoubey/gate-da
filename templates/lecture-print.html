@@ -75,6 +75,44 @@
     .q-body th, .q-body td { border: 0.5pt solid #bbb; padding: 3pt 6pt; }
     .q-body img { max-width: 100%; height: auto; display: block; margin: 6pt 0; }
 
+    /* Answer key */
+    .answer-key {
+      page-break-before: always;
+      margin-top: 0;
+    }
+    .answer-key-heading {
+      font-size: 8pt;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #555;
+      border-bottom: 1.5pt solid #111;
+      padding-bottom: 6pt;
+      margin-bottom: 14pt;
+    }
+    .answer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6pt 12pt;
+    }
+    .answer-item {
+      font-size: 9.5pt;
+      display: flex;
+      gap: 5pt;
+      align-items: baseline;
+    }
+    .ans-qnum {
+      font-family: 'Courier New', monospace;
+      font-size: 8pt;
+      color: #777;
+      flex-shrink: 0;
+      min-width: 18pt;
+    }
+    .ans-val {
+      font-weight: bold;
+      color: #111;
+    }
+
     .pdf-footer {
       position: fixed;
       bottom: 0;
@@ -91,7 +129,7 @@
 <body>
 
 <div class="pdf-header">
-  <div class="pdf-label">{{ course | replace('-', ' ') | upper }} · Practice Set</div>
+  <div class="pdf-label">{{ course_name | upper }} · Practice Set</div>
   <h1 class="pdf-title">{{ title }}</h1>
 </div>
 
@@ -103,11 +141,30 @@
   {% for q in section.questions %}
   {% set ns.qnum = ns.qnum + 1 %}
   <div class="question-item">
-    <div class="q-number">Question {{ ns.qnum }}</div>
+    <div class="q-number">Question {{ ns.qnum }} &nbsp;·&nbsp; {{ q.type }}</div>
     <div class="q-body">{{ q.body | markdown }}</div>
   </div>
   {% endfor %}
 {% endfor %}
+
+<!-- Answer Key — starts on new page -->
+<div class="answer-key">
+  <div class="answer-key-heading">Answer Key</div>
+  <div class="answer-grid">
+    {% set ns2 = namespace(qnum=0) %}
+    {% for section in sections %}
+      {% for q in section.questions %}
+      {% set ns2.qnum = ns2.qnum + 1 %}
+      {% if q.answer %}
+      <div class="answer-item">
+        <span class="ans-qnum">{{ ns2.qnum }}.</span>
+        <span class="ans-val">{{ q.answer }}</span>
+      </div>
+      {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>
 
 <div class="pdf-footer">© 2026 Ranjan Kumar Choubey · CC BY-NC 4.0 · {{ course }} · {{ slug }} · ranjankchoubey.github.io/gate</div>
 
