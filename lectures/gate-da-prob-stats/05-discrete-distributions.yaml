@@ -2,6 +2,7 @@ title: Discrete Probability Distributions
 course: gate-da-prob-stats
 slug: 05-discrete-distributions
 date: '2026-06-21'
+draft: true
 sections:
 - heading: Binomial Distribution
   questions:

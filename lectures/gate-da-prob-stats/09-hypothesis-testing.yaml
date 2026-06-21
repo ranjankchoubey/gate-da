@@ -2,6 +2,7 @@ title: "Hypothesis Testing"
 course: gate-da-prob-stats
 slug: 09-hypothesis-testing
 date: "2026-06-21"
+draft: true
 
 sections:
   - heading: "Hypothesis Setup & Errors"

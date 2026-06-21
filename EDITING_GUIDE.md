@@ -210,3 +210,42 @@ pip install "qrcode[pil]"                              # for QR codes
 | Math not rendering | Ensure `$` delimiters are closed and no space after opening `$` |
 | Image not loading | Filename in markdown must match exactly (case-sensitive on Linux) |
 | Options on one line | Options must be `- **(A)**` list format, NOT `A. text` inline |
+
+---
+
+## Question Numbering — How It Works
+
+There are **two separate ID systems**:
+
+| Layer | ID format | Example | Purpose |
+|---|---|---|---|
+| Content file (`.md`) | `Q001`, `Q5003` | `## Q001` header | Global unique ID — permanent, never changes |
+| Rendered output (HTML/PDF) | `Q1`, `Q2`, `Q3`... | Shown to student | Per-lecture display number, auto-assigned by position |
+
+**Flow:**
+
+1. **Content file** defines questions with global IDs:
+   ```
+   content/gate-da-prob-stats/01-counting-combinatorics.md
+   → ## Q001, ## Q002, ..., ## Q012, ## Q5003
+   ```
+
+2. **Lecture manifest** (YAML) picks questions by global ID and arranges them:
+   ```yaml
+   sections:
+     - heading: "Product Rule"
+       questions: [Q001, Q002, Q003, Q004]
+     - heading: "Permutations"
+       questions: [Q005, Q006, Q007, Q008]
+     - heading: "PYQ"
+       questions: [Q5003]
+   ```
+
+3. **Template** assigns display numbers sequentially based on position in manifest:
+   - `Q001` → displayed as **Q1**
+   - `Q005` → displayed as **Q5**
+   - `Q5003` → displayed as **Q13** (13th in this lecture)
+
+**Why two systems?**
+- Global IDs let you reuse the same question across multiple lectures or reorder freely without breaking anything.
+- The student only sees clean sequential numbers (Q1, Q2, Q3...) per lecture.

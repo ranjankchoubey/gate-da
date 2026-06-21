@@ -52,7 +52,37 @@ EDITING_GUIDE.md                        ← how to add questions & images
 
 ## Adding a Question
 
-Open any file in `content/{course}/` and add:
+### Fastest way — scaffold with script
+
+```bash
+# Adds next Q-ID automatically (MCQ by default)
+python scripts/new_question.py content/gate-da-prob-stats/01-counting-combinatorics.md
+
+# NAT or MSQ
+python scripts/new_question.py content/gate-da-prob-stats/01-counting-combinatorics.md --type NAT
+
+# Add multiple blanks at once
+python scripts/new_question.py content/gate-da-ml/01-regression.md --count 5
+```
+
+Script scans all content files, finds the max Q-ID, appends a blank template with the next ID, and prints the ID to copy into your YAML manifest.
+
+### VS Code snippets (type in any `.md` file)
+
+| Prefix | Expands to |
+|--------|-----------|
+| `mcq` | Full MCQ block (tab through fields) |
+| `nat` | NAT block |
+| `msq` | MSQ block |
+| `mcqi` | MCQ + image placeholder |
+| `dm` | `$$...$$` display math block |
+| `frac` | `\frac{}{}` |
+| `binom` | `\binom{n}{r}` |
+| `sum` / `prod` / `intg` | Σ / Π / ∫ templates |
+| `prob` / `condp` / `ex` / `var` | P(A) / P(A\|B) / E[X] / Var(X) |
+| `normal` | `\mathcal{N}(μ, σ²)` |
+
+### Manual format
 
 ```markdown
 ## Q013
@@ -74,7 +104,8 @@ Question text. Math works: $n!$ and $\binom{n}{k}$.
 **Type tags:** `[MCQ]` · `[NAT]` · `[MSQ]`  
 **Question IDs:** `Q` + 3 digits, globally unique across ALL content files.
 
-For images: save to `content/{course}/img/filename.png`, reference as `![alt](img/filename.png)`.
+For images: save to `content/{course}/img/filename.png`, reference as `![alt](img/filename.png)`.  
+**Tip:** Install `mushan.vscode-paste-image` — `Cmd+Alt+V` pastes a screenshot and auto-inserts the path.
 
 See **[EDITING_GUIDE.md](EDITING_GUIDE.md)** for full details.
 

@@ -2,6 +2,7 @@ title: Continuous Probability Distributions
 course: gate-da-prob-stats
 slug: 06-continuous-distributions
 date: '2026-06-21'
+draft: true
 sections:
 - heading: Uniform Distribution
   questions:
