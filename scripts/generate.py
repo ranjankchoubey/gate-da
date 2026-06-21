@@ -41,7 +41,7 @@ DOCS_DIR = BASE / "docs"
 SCRIPTS_DIR = BASE / "scripts"
 
 # Base URL for published site (no trailing slash)
-SITE_BASE_URL = "https://ranjanchoubey.github.io/practice"
+SITE_BASE_URL = "https://ranjankchoubey.github.io/gate"
 
 
 def load_manifest(yaml_file: Path) -> dict:

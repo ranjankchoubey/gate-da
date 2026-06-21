@@ -1,84 +1,129 @@
-# practice-sets
+# GATE DA 2026 — Practice Sets
 
-Distraction-free student practice sets — auto-generated from a Markdown question bank.
+Distraction-free practice sets for GATE Data Science & AI preparation.
+Auto-generated from a Markdown question bank, deployed to GitHub Pages.
 
-Published at: **https://ranjanchoubey.github.io/practice-sets/**
+**Live site:** https://ranjankchoubey.github.io/gate/
 
-## Structure
+---
+
+## Courses
+
+| Course | Topics |
+|--------|--------|
+| `gate-da-prob-stats` | Counting, Probability, Random Variables, Distributions, Statistics, CLT, Hypothesis Testing |
+| `gate-da-ml` | Linear Regression, Logistic, KNN, SVM, Trees, Bias-Variance, Neural Nets, Clustering, PCA |
+
+---
+
+## Project Structure
 
 ```
 content/
-  discrete-math/counting.md      # question bank — ## Q001 delimited
-  gate-da/                       # add more courses here
+  gate-da-prob-stats/
+    01-counting-combinatorics-demo.md   ← question bank (## Q001 delimited)
+    img/                                ← images referenced in questions
+  gate-da-ml/
+    01-linear-regression.md
+    ...
+
 lectures/
-  discrete-math/counting-basics.yaml  # one file per lecture
+  gate-da-prob-stats/
+    01-counting-basics.yaml             ← one file per lecture (sections + Q IDs)
+  gate-da-ml/
+    01-linear-regression.yaml
+
 scripts/
-  parse.py                       # extracts questions from Markdown
-  generate.py                    # renders HTML + PDF + QR
+  parse.py                              ← parses & validates question bank
+  generate.py                           ← renders HTML + PDF + QR
+
 templates/
-  lecture.html                   # student web view
-  lecture-print.html             # PDF print view
-  index.html                     # course listing
-docs/                            # generated output (GitHub Pages root)
-.github/workflows/build.yml      # CI/CD
+  lecture.html                          ← student web view
+  lecture-print.html                    ← PDF print view
+  index.html                            ← course listing homepage
+
+docs/                                   ← generated output (GitHub Pages root)
+.github/workflows/build.yml             ← CI/CD (push to main → deploy)
+
+EDITING_GUIDE.md                        ← how to add questions & images
 ```
 
-## Adding a question
+---
 
-Open any file in `content/` and add:
+## Adding a Question
+
+Open any file in `content/{course}/` and add:
 
 ```markdown
-## Q025
+## Q013
 
 [MCQ]
 
-Your question text here. Math works: $n!$ and $\binom{n}{k}$.
+Question text. Math works: $n!$ and $\binom{n}{k}$.
 
-A. Option A
-B. Option B
-C. Option C
-D. Option D
+- **(A)** Option A
+- **(B)** Option B
+- **(C)** Option C
+- **(D)** Option D
 
 **Answer:** B
-
-**Solution:** Brief explanation.
 
 ---
 ```
 
-**Question ID rules:** `Q` + 3–5 digits, globally unique across ALL content files.
+**Type tags:** `[MCQ]` · `[NAT]` · `[MSQ]`  
+**Question IDs:** `Q` + 3 digits, globally unique across ALL content files.
 
-**Type tags:** `[MCQ]` `[NAT]` `[MSQ]` `[SUBJ]` `[CODE]` `[CASE]`
+For images: save to `content/{course}/img/filename.png`, reference as `![alt](img/filename.png)`.
 
-## Adding a lecture
+See **[EDITING_GUIDE.md](EDITING_GUIDE.md)** for full details.
 
-Create `lectures/<course>/<slug>.yaml`:
+---
+
+## Adding a Lecture
+
+Create `lectures/{course}/{slug}.yaml`:
 
 ```yaml
 title: "My Lecture Title"
-course: discrete-math
-slug: my-lecture-slug     # immutable — used in URL and QR code
+course: gate-da-prob-stats
+slug: 10-my-topic
 date: "2026-06-21"
 
-questions:
-  - Q001
-  - Q025
-  - Q003
+sections:
+  - heading: "Section One"
+    questions: [Q101, Q102, Q103]
+  - heading: "Section Two"
+    questions: [Q104, Q105, Q106]
 ```
 
-**Warning:** Never rename `slug` after publishing — QR codes will break.
+> **Never rename `slug`** after publishing — URLs and QR codes will break.
 
-## Local build
+---
+
+## Local Build
 
 ```bash
 pip install -r requirements.txt
-playwright install chromium
-./build.sh
-# Open docs/discrete-math/lecture/counting-basics/index.html
+python3 scripts/generate.py
+# Preview: open docs/gate-da-prob-stats/lecture/01-counting-basics/index.html
 ```
+
+PDF generation requires Playwright (runs automatically in CI):
+```bash
+playwright install chromium
+```
+
+---
 
 ## CI/CD
 
-Push to `main` → GitHub Actions builds everything → deploys to GitHub Pages automatically.
+Push to `main` → GitHub Actions builds everything → deploys to GitHub Pages.
 
-Enable GitHub Pages in repo settings: **Source → GitHub Actions**.
+```bash
+git add .
+git commit -m "add questions"
+git push
+```
+
+Site updates at: https://ranjankchoubey.github.io/gate/
