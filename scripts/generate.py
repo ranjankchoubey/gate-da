@@ -43,6 +43,12 @@ SCRIPTS_DIR = BASE / "scripts"
 # Base URL for published site (no trailing slash)
 SITE_BASE_URL = "https://ranjankchoubey.github.io/gate"
 
+# Human-readable course names
+COURSE_NAMES = {
+    "gate-da-ml":         "Machine Learning",
+    "gate-da-prob-stats": "Probability & Statistics",
+}
+
 
 def load_manifest(yaml_file: Path) -> dict:
     with open(yaml_file) as f:
@@ -142,10 +148,14 @@ def process_lecture(manifest: dict, registry: dict, env: Environment):
     canonical_url = f"{SITE_BASE_URL}/{course}/lecture/{slug}/"
     pdf_filename = f"{slug}.pdf"
     qr_filename = "qr.png"
+    course_name = COURSE_NAMES.get(course, course.replace("-", " ").title())
+    home_url = "../../../"  # {course}/lecture/{slug}/ → docs root
 
     context = {
         "title": title,
         "course": course,
+        "course_name": course_name,
+        "home_url": home_url,
         "slug": slug,
         "sections": sections,
         "has_sections": has_sections,
@@ -196,7 +206,7 @@ def generate_index(all_lectures: list, env: Environment):
         c = lec["course"]
         courses.setdefault(c, []).append(lec)
 
-    html = render_html("index.html", {"courses": courses, "site_base": SITE_BASE_URL}, env)
+    html = render_html("index.html", {"courses": courses, "site_base": SITE_BASE_URL, "course_names": COURSE_NAMES}, env)
     index_file = DOCS_DIR / "index.html"
     index_file.write_text(html, encoding="utf-8")
     print(f"  [INDEX] {index_file.relative_to(BASE)}", file=sys.stderr)

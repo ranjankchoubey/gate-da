@@ -66,6 +66,8 @@
       flex-wrap: wrap;
     }
     .bc-sep { color: var(--border-2); }
+    .breadcrumb a { color: var(--text-4); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text-2); }
 
     .page-title {
       font-size: 1.5rem;
@@ -428,11 +430,11 @@
 <header class="site-header">
   <div class="header-inner">
     <nav class="breadcrumb" aria-label="Breadcrumb">
-      <span>GATE DA 2026</span>
+      <a href="{{ home_url }}">GATE DA 2026</a>
       <span class="bc-sep">›</span>
-      <span>{{ course | replace('-', ' ') | title }}</span>
+      <a href="{{ home_url }}#{{ course }}">{{ course_name }}</a>
       <span class="bc-sep">›</span>
-      <span>Practice Set</span>
+      <span>{{ title }}</span>
     </nav>
     <h1 class="page-title">{{ title }}</h1>
     <div class="header-row">

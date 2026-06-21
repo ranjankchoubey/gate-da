@@ -164,8 +164,8 @@
 <div class="page-layout">
 
   {% for course, lectures in courses.items() %}
-  <div class="course-block">
-    <div class="course-heading">{{ course | replace('-', ' ') }}</div>
+  <div class="course-block" id="{{ course }}">
+    <div class="course-heading">{{ course_names.get(course, course | replace('-', ' ') | title) }}</div>
     <div class="lecture-grid">
       {% for lec in lectures %}
       <a class="lecture-card" href="{{ lec.url }}">
