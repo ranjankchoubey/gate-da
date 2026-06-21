@@ -44,3 +44,4 @@ jobs:
           branch: main
           folder: docs
           clean: true
+          single-commit: true
