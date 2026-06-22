@@ -96,7 +96,7 @@ How many diﬀerent license plates can be made if each plate contains a sequence
 [NAT]
 
 What is the value of $k$ after the following code, where $n1, n2, … , nm$ are positive integers, has been executed?
-![q008-code](q008-code.png)
+![q008-code](img/q008-code.png)
 
 **Answer:** $n1 * n2 * n3 ⋯ * nm$
 
@@ -151,7 +151,7 @@ A student can choose a computer project from one of three lists. The three lists
 [NAT]
 
 What is the value of k after the following code, where n1, n2, … , nm are positive integers, has been executed?
-![q012-code](q012-code.png)
+![q012-code](img/q012-code.png)
 
 **Answer:** $n1 + n2 +⋯ + nm$
 
@@ -207,7 +207,7 @@ There are several restrictions on addresses because of **special uses**: 1111111
 
 
 
-![q015-ip](q015-ip.png)
+![q015-ip](img/q015-ip.png)
 
 **Answer:** $(2^7 - 1)\cdot(2^{24} - 2) + 2^{14}\cdot(2^{16} - 2) + 2^{21}\cdot(2^8 - 2) = 3,737,091,842$
 
