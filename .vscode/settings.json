@@ -1,5 +1,6 @@
 {
   "diffEditor.codeLens": true,
+  "editor.stickyScroll.enabled": true,
 
   "files.exclude": {
     // ── ML lectures — all hidden (set false to show when switching to ML) ──
