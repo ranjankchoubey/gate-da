@@ -20,7 +20,7 @@ The number of solutions of $x_1 + x_2 + x_3 + x_4 = 12$, where $x_1, x_2, x_3, x
 
 ---
 
-## Q5004
+## Q512
 
 [MCQ]
 [PYQ: GATE DA 2026 Numerical Ability]
@@ -35,7 +35,7 @@ Five integers are picked from 0  to  20, with possible repetitions, such that th
 **Answer:** B
 
 ---
-## Q5005
+## Q511
 
 [MCQ]
 [PYQ: GATE DA 2024 Numerical Ability]
@@ -50,7 +50,7 @@ How many 4-digit positive integers divisible by 3 can be formed using only the d
 **Answer:** C
 
 ---
-## Q5006
+## Q512
 
 [NAT]
 [PYQ: GATE CSE 2025 SET-1 Discrete Mathematics]

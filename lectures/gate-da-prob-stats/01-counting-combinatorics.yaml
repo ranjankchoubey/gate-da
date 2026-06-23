@@ -28,7 +28,20 @@ sections:
   - Q014
   - Q015
 
--heading : Subtraction Rule
+- heading: Subtraction Rule
+  questions:
+  - Q016
+  - Q017
+
+- heading: Division Rule
+  questions:
+  - Q018
+
+- heading: Tree Diagrams
+  questions:
+  - Q019
+  - Q020
+
 
 
 
