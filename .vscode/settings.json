@@ -40,7 +40,7 @@
     "docs/gate-da-ml/lecture/08-pca/":                      true,
 
     // ── prob-stats lectures — set true to HIDE, false to SHOW ─────────────
-    // To switch focus: set current lecture to true, next to false
+    // To switch focus: set current lecture to true, next to false,
     "content/gate-da-prob-stats/01-counting-combinatorics.md":         false,
     "content/gate-da-prob-stats/02-probability-basics.md":             true,
     "content/gate-da-prob-stats/03-conditional-probability-bayes.md":  true,
@@ -74,6 +74,19 @@
     "docs/gate-da-prob-stats/lecture/09-hypothesis-testing/":            true,
     "docs/gate-da-prob-stats/lecture/10-covariance-correlation/":        true,
 
+    // ── prob-stats PYQ files ──────────────────────────────────────────────
+    "content/gate-da-prob-stats/01-counting-combinatorics-pyq.md":        false,
+    "content/gate-da-prob-stats/02-probability-basics-pyq.md":            true,
+    "content/gate-da-prob-stats/03-conditional-probability-bayes-pyq.md": true,
+    "content/gate-da-prob-stats/04-random-variables-pyq.md":              true,
+    "content/gate-da-prob-stats/05-discrete-distributions-pyq.md":        true,
+    "content/gate-da-prob-stats/06-continuous-distributions-pyq.md":      true,
+    "content/gate-da-prob-stats/08-clt-confidence-intervals-pyq.md":      true,
+    "content/gate-da-prob-stats/10-covariance-correlation-pyq.md":        true,
+
+    // ── prob-stats images ─────────────────────────────────────────────────
+    "content/gate-da-prob-stats/img/":                                     true,
+
     // ── Noise reduction ───────────────────────────────────────────────────
     "docs/assets/": true,
     "docs/robots.txt": true,
@@ -82,8 +95,13 @@
     "templates/": true,
     ".venv/": true,
     ".github/": true,
+    ".vscode/": true,
     "__pycache__/": true,
-    "requirements.txt": true
+    "requirements.txt": true,
+    "README.md": false,
+    "EDITING_GUIDE.md": false,
+    "build.sh": false,
+    "rough.md": false
   },
 
   "explorer.fileNesting.enabled": true,
