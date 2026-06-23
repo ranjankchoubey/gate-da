@@ -215,5 +215,73 @@ There are several restrictions on addresses because of **special uses**: 1111111
 
 ## Section 3 : Subtraction Rule
 
+## Q016
+
+[NAT]
+
+How many bit strings of length eight either start with a 1 bit or end with the two bits 00?
+
+**Answer:** $2^7 + 2^6 - 2^5 = 160$
+
+---
+
+## Q017
+
+[MCQ]
+
+A computer company receives 350 applications from college graduates for a job planning a line of new web servers. Suppose that 220 of these applicants majored in computer science, 147 majored in business, and 51 majored both in computer science and in business. How many of these applicants majored neither in computer science nor in business?
+
+- **(A)** 17
+- **(B)** 68
+- **(C)** 51
+- **(D)** 34
+
+**Answer:** D
+
+---
+
+## Section 4 : Division Rule
+
+## Q018
+
+[NAT]
+
+How many diﬀerent ways are there to seat four people around a circular table, where two seatings are considered the same when each person has the same left neighbor and the same right
+neighbor?
+
+**Answer:** 24/4 = 6
+
+---
+
+
+## Section 5 : Tree Diagrams
+
+## Q019
+
+[MCQ]
+
+How many bit strings of length four do not have two consecutive 1s?
+
+- **(A)** 5
+- **(B)** 6
+- **(C)** 7
+- **(D)** 8
+
+**Answer:** D
+
+---
+
+## Q020
+
+[NAT]
+
+Suppose a T-shirts come in five diﬀerent sizes: S, M, L, XL, and XXL. Further suppose that each size comes in four colors, white, red,green, and black, except for XL, which comes only in red, green, and black, and XXL, which comes only in green and black. How many diﬀerent shirts does a souvenir shop have to stock to have at least one of each available size and color of the T-shirt?
+
+**Answer:** 17
+
+---
+
+
+
 
 
