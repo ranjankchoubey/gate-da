@@ -4,3 +4,4 @@ __pycache__/
 *.pyo
 docs/
 .DS_Store
+books/
