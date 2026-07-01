@@ -17,10 +17,13 @@ const Router = (() => {
     },
 
     go(pageId, recordHistory = true) {
-      // Save current page before leaving
+      // Save current page before leaving (only if the editor has rendered content)
       const currentId = Store.getCurrentPageId();
-      if (currentId) {
-        EditorComponent.saveCurrentPage();
+      if (currentId && currentId !== pageId) {
+        const titleEl = document.querySelector('.page-title');
+        if (titleEl && titleEl.textContent.trim()) {
+          EditorComponent.saveCurrentPage();
+        }
       }
 
       if (recordHistory) {

@@ -15,7 +15,14 @@ const EditorComponent = (() => {
     if (!blocks || blocks.length === 0) {
       return '<p style="color:var(--text-muted);text-align:center;padding:40px;">No content yet. Click "+ Block" to start adding.</p>';
     }
-    return blocks.map(b => `
+    return blocks.map(b => {
+      const imgActions = b.type === 'image' ? `
+        <div class="img-block-actions">
+          <button class="img-act-btn" onclick="EditorComponent.cropImageBlock('${b.id}')" title="Crop">✂ Crop</button>
+          <button class="img-act-btn" onclick="EditorComponent.resizeImageBlock('${b.id}')" title="Resize">⤡ Resize</button>
+          <button class="img-act-btn del" onclick="EditorComponent.deleteBlock('${b.id}')" title="Delete">✕ Delete</button>
+        </div>` : '';
+      return `
       <div class="block" data-id="${b.id}" data-type="${b.type}" draggable="true">
         <div class="block-drag-handle" title="Drag to reorder">⠿</div>
         <span class="block-badge ${b.type}">${b.type}</span>
@@ -26,8 +33,9 @@ const EditorComponent = (() => {
         </div>
         <div class="block-title" data-field="title">${b.title}</div>
         <div class="block-body" data-field="content">${b.content}</div>
-      </div>
-    `).join('');
+        ${imgActions}
+      </div>`;
+    }).join('');
   }
 
   function _initDragDrop() {
@@ -79,9 +87,36 @@ const EditorComponent = (() => {
     }, { offset: Number.NEGATIVE_INFINITY }).element;
   }
 
+  function _initPasteImage() {
+    const area = document.getElementById('blocks-area');
+    if (!area || area._pasteReady) return;
+    area._pasteReady = true;
+    area.addEventListener('paste', (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            Store.addBlock(_currentPageId, 'image', 'Pasted image', `<img src="${ev.target.result}" alt="pasted" style="max-width:100%;border-radius:6px;">`);
+            EditorComponent.renderPage(_currentPageId);
+            App.toast('Image pasted', 'info');
+          };
+          reader.readAsDataURL(file);
+          return;
+        }
+      }
+    });
+  }
+
   function _setEditable(enabled) {
     if (!_el) return;
     _el.querySelectorAll('.block-title, .block-body, .page-title').forEach(el => {
+      // Don't make image block bodies editable
+      if (el.classList.contains('block-body') && el.closest('.block')?.dataset.type === 'image') return;
       el.contentEditable = enabled;
     });
     _el.classList.toggle('editing-active', enabled);
@@ -124,6 +159,7 @@ const EditorComponent = (() => {
       if (_editing) _setEditable(true);
 
       _initDragDrop();
+      _initPasteImage();
 
       // Render math
       try {
@@ -166,10 +202,12 @@ const EditorComponent = (() => {
         });
       });
 
-      Store.updatePage(_currentPageId, {
-        title: titleEl ? titleEl.textContent : '',
-        blocks
-      });
+      const newTitle = titleEl ? titleEl.textContent.trim() : '';
+      const updates = { blocks };
+      // Only update title if non-empty (prevent accidental blanking)
+      if (newTitle) updates.title = newTitle;
+
+      Store.updatePage(_currentPageId, updates);
 
       // Re-render math after save
       try {
@@ -198,6 +236,7 @@ const EditorComponent = (() => {
         <button class="picker-btn formula" onclick="EditorComponent._createBlock('formula')">Formula</button>
         <button class="picker-btn example" onclick="EditorComponent._createBlock('example')">Example</button>
         <button class="picker-btn code" onclick="EditorComponent._createBlock('code')">Code</button>
+        <button class="picker-btn image" onclick="EditorComponent._createImageBlock()">Image</button>
         <button class="picker-btn gate" onclick="EditorComponent._createBlock('gate')">GATE</button>
         <button class="picker-btn warning" onclick="EditorComponent._createBlock('warning')">Warning</button>
         <button class="picker-btn note" onclick="EditorComponent._createBlock('note')">Note</button>
@@ -215,8 +254,28 @@ const EditorComponent = (() => {
       if (!_editing) this.toggleEdit();
     },
 
+    _createImageBlock() {
+      const picker = document.getElementById('block-type-picker');
+      if (picker) picker.remove();
+      // Open file picker
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const dataURL = ev.target.result;
+          Store.addBlock(_currentPageId, 'image', file.name, `<img src="${dataURL}" alt="${file.name}" style="max-width:100%;border-radius:6px;">`);
+          this.renderPage(_currentPageId);
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    },
+
     deleteBlock(blockId) {
-      this.saveCurrentPage();
       Store.deleteBlock(_currentPageId, blockId);
       this.renderPage(_currentPageId);
       App.toast('Block deleted', 'info');
@@ -276,6 +335,133 @@ const EditorComponent = (() => {
           <button class="btn" onclick="SidebarComponent.addNotebook()">+ New Notebook</button>
         </div>
       `;
+    },
+
+    cropImageBlock(blockId) {
+      const blockEl = _el.querySelector(`.block[data-id="${blockId}"]`);
+      if (!blockEl) return;
+      const img = blockEl.querySelector('.block-body img');
+      if (!img) return;
+
+      // Create crop overlay
+      const body = blockEl.querySelector('.block-body');
+      const overlay = document.createElement('div');
+      overlay.className = 'img-crop-overlay';
+      overlay.innerHTML = `
+        <div class="crop-selection" id="crop-sel-${blockId}"></div>
+        <div class="crop-controls">
+          <button class="btn primary" onclick="EditorComponent._applyCrop('${blockId}')">✓ Apply</button>
+          <button class="btn" onclick="EditorComponent._cancelCrop('${blockId}')">✕ Cancel</button>
+        </div>
+      `;
+      body.style.position = 'relative';
+      body.appendChild(overlay);
+
+      // Crop selection drag
+      let startX, startY, sel;
+      overlay.addEventListener('mousedown', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        sel = overlay.querySelector('.crop-selection');
+        const rect = overlay.getBoundingClientRect();
+        startX = e.clientX - rect.left;
+        startY = e.clientY - rect.top;
+        sel.style.display = 'block';
+        sel.style.left = startX + 'px';
+        sel.style.top = startY + 'px';
+        sel.style.width = '0';
+        sel.style.height = '0';
+
+        const onMove = (ev) => {
+          const x = ev.clientX - rect.left;
+          const y = ev.clientY - rect.top;
+          sel.style.left = Math.min(x, startX) + 'px';
+          sel.style.top = Math.min(y, startY) + 'px';
+          sel.style.width = Math.abs(x - startX) + 'px';
+          sel.style.height = Math.abs(y - startY) + 'px';
+        };
+        const onUp = () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        };
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    },
+
+    _applyCrop(blockId) {
+      const blockEl = _el.querySelector(`.block[data-id="${blockId}"]`);
+      if (!blockEl) return;
+      const body = blockEl.querySelector('.block-body');
+      const overlay = body.querySelector('.img-crop-overlay');
+      const sel = overlay.querySelector('.crop-selection');
+      const img = body.querySelector('img');
+      if (!img || !sel || sel.offsetWidth < 5) {
+        this._cancelCrop(blockId);
+        return;
+      }
+
+      // Get crop rectangle relative to image
+      const imgRect = img.getBoundingClientRect();
+      const selRect = sel.getBoundingClientRect();
+      const scaleX = img.naturalWidth / imgRect.width;
+      const scaleY = img.naturalHeight / imgRect.height;
+
+      const cx = Math.max(0, (selRect.left - imgRect.left) * scaleX);
+      const cy = Math.max(0, (selRect.top - imgRect.top) * scaleY);
+      const cw = Math.min(selRect.width * scaleX, img.naturalWidth - cx);
+      const ch = Math.min(selRect.height * scaleY, img.naturalHeight - cy);
+
+      // Draw cropped image to canvas and replace
+      const canvas = document.createElement('canvas');
+      canvas.width = cw;
+      canvas.height = ch;
+      const ctx2d = canvas.getContext('2d');
+      ctx2d.drawImage(img, cx, cy, cw, ch, 0, 0, cw, ch);
+
+      const dataURL = canvas.toDataURL('image/png');
+      overlay.remove();
+      body.style.position = '';
+
+      // Update store
+      const result = Store.findPage(_currentPageId);
+      if (result) {
+        const block = result.page.blocks.find(b => b.id === blockId);
+        if (block) {
+          block.content = `<img src="${dataURL}" alt="cropped" style="max-width:100%;border-radius:6px;">`;
+          Store.updatePage(_currentPageId, { blocks: result.page.blocks });
+          this.renderPage(_currentPageId);
+          App.toast('Image cropped', 'info');
+        }
+      }
+    },
+
+    _cancelCrop(blockId) {
+      const blockEl = _el.querySelector(`.block[data-id="${blockId}"]`);
+      if (!blockEl) return;
+      const body = blockEl.querySelector('.block-body');
+      const overlay = body.querySelector('.img-crop-overlay');
+      if (overlay) overlay.remove();
+      body.style.position = '';
+    },
+
+    resizeImageBlock(blockId) {
+      const blockEl = _el.querySelector(`.block[data-id="${blockId}"]`);
+      if (!blockEl) return;
+      const img = blockEl.querySelector('.block-body img');
+      if (!img) return;
+
+      Modal.prompt('Resize Image', 'Max width (px or %)', img.style.maxWidth || '100%').then(val => {
+        if (!val) return;
+        const result = Store.findPage(_currentPageId);
+        if (result) {
+          const block = result.page.blocks.find(b => b.id === blockId);
+          if (block) {
+            block.content = block.content.replace(/max-width:[^;"]+/, `max-width:${val}`);
+            Store.updatePage(_currentPageId, { blocks: result.page.blocks });
+            this.renderPage(_currentPageId);
+          }
+        }
+      });
     }
   };
 })();

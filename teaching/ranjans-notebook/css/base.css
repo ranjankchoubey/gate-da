@@ -61,7 +61,7 @@ h3 { font-size: 0.95rem; font-weight: 600; }
 
 /* Utilities */
 .hidden { display: none !important; }
-.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
 
 /* Buttons */
 button { font-family: inherit; cursor: pointer; }

@@ -19,6 +19,24 @@ const Store = (() => {
       console.error('Store: failed to load', e);
       _data = { notebooks: [], currentPageId: null };
     }
+    _repairData();
+  }
+
+  function _repairData() {
+    // Fix any pages with empty titles
+    let repaired = false;
+    for (const nb of (_data.notebooks || [])) {
+      for (const sec of (nb.sections || [])) {
+        for (let i = 0; i < (sec.pages || []).length; i++) {
+          const page = sec.pages[i];
+          if (!page.title || !page.title.trim()) {
+            page.title = `Page ${i + 1}`;
+            repaired = true;
+          }
+        }
+      }
+    }
+    if (repaired) _save();
   }
 
   function _save() {
@@ -118,6 +136,10 @@ const Store = (() => {
     updatePage(pageId, updates) {
       const result = this.findPage(pageId);
       if (!result) return;
+      // Never save empty title
+      if ('title' in updates && !updates.title?.trim()) {
+        delete updates.title;
+      }
       Object.assign(result.page, updates, { updatedAt: new Date().toISOString() });
       _save();
     },
@@ -195,7 +217,7 @@ const Store = (() => {
 
     // ─── Seed sample data ───
     loadSampleData(data) {
-      _data = data;
+      _data = JSON.parse(JSON.stringify(data));
       _save();
     }
   };

@@ -10,6 +10,7 @@ const App = (() => {
   function _renderToolbar() {
     const toolbar = document.getElementById('toolbar');
     const isBuild = _mode === 'build';
+    const progress = _getProgress();
     toolbar.innerHTML = `
       <div class="toolbar-nav">
         <button class="btn ghost sm" onclick="Router.back()">◀</button>
@@ -17,16 +18,107 @@ const App = (() => {
         <span class="toolbar-breadcrumb" id="breadcrumb"></span>
       </div>
       <div class="toolbar-spacer"></div>
+      <div class="progress-indicator" title="${progress.label}: ${progress.done}/${progress.total} done">
+        <div class="progress-bar"><div class="progress-fill" style="width:${progress.pct}%"></div></div>
+        <span class="progress-text">${progress.done}/${progress.total}</span>
+      </div>
       <div class="toolbar-modes">
         <button class="btn ${isBuild ? 'active' : ''}" onclick="App.setMode('build')">📋 Build</button>
         <button class="btn ${!isBuild ? 'active' : ''}" onclick="App.setMode('teach')">🎓 Teach</button>
       </div>
       ${isBuild ? `<button class="btn" id="btn-edit" onclick="EditorComponent.toggleEdit()">✏️ Edit</button>
-      <button class="btn" onclick="EditorComponent.addBlock()">+ Block</button>` : ''}
+      <button class="btn" onclick="EditorComponent.addBlock()">+ Block</button>
+      <button class="btn ghost sm" id="btn-status" onclick="App.cyclePageStatus()" title="Toggle page status">●</button>` : ''}
+      <button class="btn ghost sm" onclick="App.toggleSearch()" title="Search (⌘F)">🔍</button>
       <button class="btn ghost sm" onclick="App.zoomOut()" title="Decrease font size">A−</button>
       <button class="btn ghost sm" onclick="App.zoomIn()" title="Increase font size">A+</button>
       <button class="btn ghost sm" onclick="App.exportPDF()" title="Export PDF">📄</button>
     `;
+    _updateStatusBtn();
+  }
+
+  function _getProgress() {
+    const pageId = Store.getCurrentPageId();
+    const result = pageId ? Store.findPage(pageId) : null;
+    if (!result) {
+      return { total: 0, done: 0, pct: 0, label: '' };
+    }
+    const sec = result.section;
+    let total = 0, done = 0;
+    for (const page of sec.pages) {
+      total++;
+      if (page.status === 'done') done++;
+    }
+    return { total, done, pct: total > 0 ? Math.round((done / total) * 100) : 0, label: sec.name };
+  }
+
+  function _getCanvasSnapshots(pageId) {
+    const countRaw = localStorage.getItem('rn-canvas-' + pageId + '-count');
+    const count = countRaw ? parseInt(countRaw, 10) : 1;
+    let html = '';
+    for (let i = 0; i < count; i++) {
+      const key = 'rn-canvas-' + pageId + (i > 0 ? '-b' + i : '');
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      try {
+        const items = JSON.parse(raw);
+        if (items.length === 0) continue;
+        // Render items to an offscreen canvas for snapshot
+        const c = document.createElement('canvas');
+        c.width = 1200; c.height = 800;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, c.width, c.height);
+        // Simple: just note that boards exist, render what we can
+        items.forEach(item => {
+          if (item.type === 'path' && item.points) {
+            ctx.beginPath();
+            ctx.strokeStyle = item.color || '#1a1a2e';
+            ctx.lineWidth = item.size || 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            item.points.forEach((p, j) => j === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+            ctx.stroke();
+          }
+          if (item.type === 'text') {
+            ctx.font = `${item.fontSize || 20}px ${item.fontFamily || 'sans-serif'}`;
+            ctx.fillStyle = item.color || '#1a1a2e';
+            ctx.fillText(item.text || '', item.x || 0, item.y || 0);
+          }
+          if (['line', 'arrow', 'rect', 'roundrect', 'circle'].includes(item.type)) {
+            ctx.beginPath();
+            ctx.strokeStyle = item.color || '#1a1a2e';
+            ctx.lineWidth = item.size || 3;
+            if (item.type === 'line' || item.type === 'arrow') {
+              ctx.moveTo(item.x1, item.y1);
+              ctx.lineTo(item.x2, item.y2);
+              ctx.stroke();
+            }
+            if (item.type === 'rect') { ctx.strokeRect(item.x, item.y, item.w, item.h); }
+            if (item.type === 'circle') {
+              ctx.arc(item.cx, item.cy, item.r, 0, Math.PI * 2);
+              ctx.stroke();
+            }
+          }
+        });
+        const dataURL = c.toDataURL('image/png');
+        html += `<div class="canvas-snapshot"><img src="${dataURL}"><div class="board-label">Whiteboard ${count > 1 ? (i + 1) : ''}</div></div>`;
+      } catch (e) {}
+    }
+    return html;
+  }
+
+  function _updateStatusBtn() {
+    const btn = document.getElementById('btn-status');
+    if (!btn) return;
+    const pageId = Store.getCurrentPageId();
+    const result = pageId ? Store.findPage(pageId) : null;
+    if (!result) return;
+    const s = result.page.status || 'todo';
+    const colors = { todo: '#94a3b8', wip: '#f59e0b', done: '#22c55e' };
+    const labels = { todo: 'To Do', wip: 'In Progress', done: 'Done' };
+    btn.style.color = colors[s];
+    btn.title = `Status: ${labels[s]} (click to change)`;
   }
 
   return {
@@ -66,6 +158,10 @@ const App = (() => {
           EditorComponent.saveCurrentPage();
           App.toast('Saved!', 'success');
         }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+          e.preventDefault();
+          App.toggleSearch();
+        }
         // Teach mode shortcuts (only single-letter keys without modifiers)
         if (_mode === 'teach' && !e.metaKey && !e.ctrlKey && !e.altKey) {
           if (e.key === 'ArrowRight') TeachMode.next();
@@ -78,9 +174,14 @@ const App = (() => {
           if (e.key === 'r') CanvasComponent.setTool('rect');
           if (e.key === 'c') CanvasComponent.setTool('circle');
           if (e.key === 'd') CanvasComponent.toggleDashed();
+          if (e.key === 'g') CanvasComponent.toggleGrid();
+          if (e.key === 'z') CanvasComponent.setTool('laser');
           if (e.key === 'b') TeachMode.toggleFullBoard();
           if (e.key === 'Escape') CanvasComponent.setTool('pen');
           if (e.key === 'Delete' || e.key === 'Backspace') CanvasComponent.deleteSelectedImage();
+          if (e.key === '[') CanvasComponent.prevBoard();
+          if (e.key === ']') CanvasComponent.nextBoard();
+          if (e.key === 'n') CanvasComponent.addBoard();
         }
         // Ctrl/Cmd shortcuts work regardless
         if (_mode === 'teach') {
@@ -140,7 +241,7 @@ const App = (() => {
           </div>
         `;
 
-        CanvasComponent.attach(document.getElementById('teach-canvas'));
+        CanvasComponent.attach(document.getElementById('teach-canvas'), pageId);
         TeachMode.init();
         App._initDividerDrag();
 
@@ -187,6 +288,64 @@ const App = (() => {
       setTimeout(() => el.remove(), 2000);
     },
 
+    toggleSearch() {
+      let bar = document.getElementById('search-bar');
+      if (bar) { bar.remove(); return; }
+      bar = document.createElement('div');
+      bar.id = 'search-bar';
+      bar.innerHTML = `
+        <input type="text" id="search-input" placeholder="Search across all pages…" autofocus>
+        <div id="search-results"></div>
+      `;
+      document.querySelector('.main').prepend(bar);
+      const input = bar.querySelector('#search-input');
+      input.focus();
+      let debounce;
+      input.addEventListener('input', () => {
+        clearTimeout(debounce);
+        debounce = setTimeout(() => App._doSearch(input.value), 200);
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') bar.remove();
+      });
+    },
+
+    _doSearch(query) {
+      const results = document.getElementById('search-results');
+      if (!results) return;
+      if (!query || query.length < 2) { results.innerHTML = ''; return; }
+      const q = query.toLowerCase();
+      const notebooks = Store.getNotebooks();
+      let html = '';
+      let count = 0;
+      for (const nb of notebooks) {
+        for (const sec of nb.sections) {
+          for (const page of sec.pages) {
+            // Search in page title
+            const titleMatch = page.title.toLowerCase().includes(q);
+            // Search in blocks
+            const matchBlocks = (page.blocks || []).filter(b =>
+              b.title.toLowerCase().includes(q) ||
+              b.content.replace(/<[^>]*>/g, '').toLowerCase().includes(q)
+            );
+            if (titleMatch || matchBlocks.length > 0) {
+              count++;
+              if (count > 20) break;
+              const snippet = matchBlocks.length > 0
+                ? matchBlocks[0].content.replace(/<[^>]*>/g, '').substring(0, 80) + '…'
+                : '';
+              html += `<div class="search-result" onclick="document.getElementById('search-bar').remove();Router.go('${page.id}')">
+                <span class="sr-path">${nb.name} › ${sec.name}</span>
+                <span class="sr-title">${page.title}</span>
+                ${snippet ? `<span class="sr-snippet">${snippet}</span>` : ''}
+              </div>`;
+            }
+          }
+        }
+      }
+      results.innerHTML = count === 0 ? '<div class="sr-empty">No results</div>' : html;
+    },
+
     zoomIn() {
       const current = parseFloat(getComputedStyle(document.documentElement).fontSize);
       document.documentElement.style.fontSize = Math.min(current + 1, 22) + 'px';
@@ -195,6 +354,21 @@ const App = (() => {
     zoomOut() {
       const current = parseFloat(getComputedStyle(document.documentElement).fontSize);
       document.documentElement.style.fontSize = Math.max(current - 1, 12) + 'px';
+    },
+
+    cyclePageStatus() {
+      const pageId = Store.getCurrentPageId();
+      if (!pageId) return;
+      const result = Store.findPage(pageId);
+      if (!result) return;
+      const cycle = { todo: 'wip', wip: 'done', done: 'todo' };
+      const next = cycle[result.page.status || 'todo'];
+      Store.setPageStatus(pageId, next);
+      _updateStatusBtn();
+      _renderToolbar();
+      SidebarComponent.refresh();
+      const labels = { todo: 'To Do', wip: 'In Progress', done: 'Done' };
+      App.toast(`Status: ${labels[next]}`, 'info');
     },
 
     toggleSidebar() {
@@ -249,6 +423,24 @@ const App = (() => {
       App.toast('Sample data loaded!', 'success');
     },
 
+    resetData() {
+      Modal.confirm('Reset all data to sample? This will erase your changes.').then(yes => {
+        if (yes) {
+          localStorage.removeItem('ranjans-notebook');
+          // Also clear canvas data
+          Object.keys(localStorage).forEach(k => {
+            if (k.startsWith('rn-canvas-')) localStorage.removeItem(k);
+          });
+          Store.init();
+          Store.loadSampleData(SAMPLE_DATA);
+          SidebarComponent.refresh();
+          Router.go(SAMPLE_DATA.currentPageId);
+          _renderToolbar();
+          App.toast('Data reset!', 'success');
+        }
+      });
+    },
+
     exportPDF() {
       const pageId = Store.getCurrentPageId();
       if (!pageId) { App.toast('No page selected', 'error'); return; }
@@ -280,6 +472,9 @@ const App = (() => {
           .block-body ul, .block-body ol { padding-left: 20px; }
           .formula-display { text-align: center; padding: 10px; margin: 8px 0; background: white; border-radius: 6px; border: 1px solid #e5e7eb; }
           details summary { cursor: pointer; font-weight: 600; color: #3b82f6; }
+          .canvas-snapshot { text-align: center; margin: 24px 0; page-break-inside: avoid; }
+          .canvas-snapshot img { max-width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; }
+          .canvas-snapshot .board-label { font-size: 0.7rem; color: #666; margin-top: 4px; }
           @media print { body { padding: 20px 30px; } .block { box-shadow: none; } }
         </style>
       </head><body>
@@ -292,6 +487,7 @@ const App = (() => {
             <div class="block-body">${b.content}</div>
           </div>
         `).join('')}
+        ${_getCanvasSnapshots(pageId)}
         <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"><\/script>
         <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"><\/script>
         <script>
