@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GATE DA — Teaching Notebook</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --sidebar-w: 280px;
+    --bg: #fafbfc;
+    --sidebar-bg: #1e1e2e;
+    --sidebar-hover: #2a2a3e;
+    --sidebar-active: #3b3b5e;
+    --text: #1a1a2e;
+    --text-light: #6b7280;
+    --text-sidebar: #cdd6f4;
+    --accent: #3b82f6;
+    --accent-light: #dbeafe;
+    --green: #10b981;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --border: #e5e7eb;
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ═══════════════════════════════════════════
+     SIDEBAR — Notebook Navigation (OneNote-style)
+     ═══════════════════════════════════════════ */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    overflow: hidden;
+  }
+
+  .sidebar-header {
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-header h1 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sidebar-header .badge {
+    font-size: 0.6rem;
+    background: var(--accent);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: white;
+  }
+
+  .sidebar-search {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .sidebar-search input {
+    width: 100%;
+    padding: 7px 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    color: white;
+    font-size: 0.8rem;
+    outline: none;
+  }
+  .sidebar-search input::placeholder { color: rgba(255,255,255,0.35); }
+  .sidebar-search input:focus { border-color: var(--accent); }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+  .sidebar-nav::-webkit-scrollbar { width: 4px; }
+  .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+  /* Notebook (top-level) */
+  .notebook-item {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 8px;
+  }
+
+  /* Section (collapsible) */
+  .section-item {
+    padding: 6px 16px 6px 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--sidebar-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+  }
+  .section-item:hover { background: var(--sidebar-hover); }
+  .section-item.active { 
+    background: var(--sidebar-active); 
+    border-left-color: var(--accent);
+  }
+  .section-item .icon { font-size: 0.9rem; }
+  .section-item .chevron {
+    margin-left: auto;
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    color: rgba(255,255,255,0.3);
+  }
+  .section-item.expanded .chevron { transform: rotate(90deg); }
+
+  /* Page (leaf item) */
+  .page-item {
+    padding: 5px 16px 5px 40px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.65);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .page-item:hover { background: var(--sidebar-hover); color: white; }
+  .page-item.active { color: var(--accent); font-weight: 600; }
+  .page-item .status {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-left: auto;
+  }
+  .page-item .status.done { background: var(--green); }
+  .page-item .status.wip { background: var(--orange); }
+  .page-item .status.todo { background: var(--border); }
+
+  .section-pages { display: none; }
+  .section-pages.open { display: block; }
+
+  /* Add button */
+  .sidebar-footer {
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-footer button {
+    width: 100%;
+    padding: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px dashed rgba(255,255,255,0.2);
+    border-radius: 6px;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sidebar-footer button:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ═══════════════════════════════════════════
+     MAIN CONTENT AREA
+     ═══════════════════════════════════════════ */
+  .main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Page Header / Breadcrumb */
+  .page-header {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+  }
+  .breadcrumb {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .breadcrumb .sep { color: #ccc; }
+
+  .page-header .actions {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+  }
+  .page-header .actions button {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .page-header .actions button:hover { border-color: var(--accent); color: var(--accent); }
+  .page-header .actions button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  /* Content Body */
+  .content-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+  }
+  .content-body::-webkit-scrollbar { width: 6px; }
+  .content-body::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+
+  /* Page Title */
+  .page-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text);
+    outline: none;
+  }
+  .page-title:focus { border-bottom: 2px solid var(--accent); }
+  .page-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 24px;
+  }
+
+  /* Tags */
+  .tags { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tag {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .tag.blue { background: var(--accent-light); color: var(--accent); }
+  .tag.green { background: #d1fae5; color: #065f46; }
+  .tag.orange { background: #fef3c7; color: #92400e; }
+  .tag.purple { background: #ede9fe; color: #5b21b6; }
+
+  /* Content Blocks */
+  .block {
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: white;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    transition: box-shadow 0.2s;
+  }
+  .block:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .block.editable:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+
+  .block-type {
+    position: absolute;
+    top: -8px;
+    left: 16px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: white;
+    border: 1px solid var(--border);
+  }
+  .block-type.concept { color: var(--accent); border-color: var(--accent-light); background: var(--accent-light); }
+  .block-type.formula { color: #7c3aed; border-color: #ede9fe; background: #ede9fe; }
+  .block-type.example { color: var(--green); border-color: #d1fae5; background: #d1fae5; }
+  .block-type.warning { color: var(--red); border-color: #fee2e2; background: #fee2e2; }
+  .block-type.gate { color: var(--orange); border-color: #fef3c7; background: #fef3c7; }
+
+  .block h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .block p, .block li {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: #374151;
+  }
+  .block ul, .block ol {
+    padding-left: 20px;
+    margin-top: 6px;
+  }
+
+  /* Formula display */
+  .formula-display {
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 12px;
+    margin: 10px 0;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Grid layout for cases */
+  .cases-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 12px 0;
+  }
+  .case-mini {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid;
+  }
+  .case-mini.c1 { background: #fefce8; border-color: #fde047; }
+  .case-mini.c2 { background: #ecfdf5; border-color: #6ee7b7; }
+  .case-mini.c3 { background: #eff6ff; border-color: #93c5fd; }
+  .case-mini.c4 { background: #faf5ff; border-color: #c4b5fd; }
+  .case-mini h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; }
+  .case-mini .formula { font-size: 0.95rem; text-align: center; margin: 6px 0; }
+  .case-mini .desc { font-size: 0.72rem; color: #555; }
+
+  /* Editable indicator */
+  .block [contenteditable="true"]:hover {
+    background: rgba(59,130,246,0.03);
+    border-radius: 4px;
+  }
+  .block [contenteditable="true"]:focus {
+    background: rgba(59,130,246,0.05);
+    outline: none;
+    border-radius: 4px;
+  }
+
+  /* Section divider */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 16px;
+    color: var(--text-light);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Add block button */
+  .add-block-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    margin: 12px 0;
+    border: 1.5px dashed #d1d5db;
+    border-radius: 8px;
+    color: #9ca3af;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    width: 100%;
+  }
+  .add-block-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(59,130,246,0.03);
+  }
+
+  /* Quick reference table */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin: 8px 0;
+  }
+  .ref-table th {
+    background: #f1f5f9;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #475569;
+    border-bottom: 2px solid var(--border);
+  }
+  .ref-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .ref-table tr:hover td { background: #f8fafc; }
+
+  /* Teaching mode toggle */
+  .mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px;
+    background: #f1f5f9;
+    border-radius: 6px;
+  }
+  .mode-toggle button {
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-light);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .mode-toggle button.active {
+    background: white;
+    color: var(--text);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SIDEBAR
+     ═══════════════════════════════════════════ -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h1>📘 GATE DA Notebook <span class="badge">2026</span></h1>
+  </div>
+  
+  <div class="sidebar-search">
+    <input type="text" placeholder="🔍 Search topics..." id="search-input" oninput="filterNav(this.value)">
+  </div>
+
+  <div class="sidebar-nav" id="sidebar-nav">
+    <!-- PROB & STATS -->
+    <div class="notebook-item">📊 Probability & Statistics</div>
+    
+    <div class="section-item expanded active" onclick="toggleSection(this)">
+      <span class="icon">📐</span> Counting & Combinatorics
+      <span class="chevron">▶</span>
+    </div>
+    <div class="section-pages open">
+      <div class="page-item active" onclick="loadPage('counting-overview')">
+        📄 Overview & Formulas <span class="status done"></span>
+      </div>
+      <div class="page-item" onclick="loadPage('product-sum-rule')">
+        📄 Product & Sum Rule <span class="status done"></span>
+      </div>
+      <div class="page-item" onclick="loadPage('permutations')">
+        📄 Permutations <span class="status wip"></span>
+      </div>
+      <div class="page-item" onclick="loadPage('combinations')">
+        📄 Combinations <span class="status wip"></span>
+      </div>
+      <div class="page-item" onclick="loadPage('stars-bars')">
+        📄 Stars & Bars <span class="status done"></span>
+      </div>
+      <div class="page-item" onclick="loadPage('inclusion-exclusion')">
+        📄 Inclusion-Exclusion <span class="status todo"></span>
+      </div>
+      <div class="page-item" onclick="loadPage('pigeonhole')">
+        📄 Pigeonhole Principle <span class="status todo"></span>
+      </div>
+      <div class="page-item" onclick="loadPage('counting-pyq')">
+        📄 PYQ Collection <span class="status wip"></span>
+      </div>
+    </div>
+
+    <div class="section-item" onclick="toggleSection(this)">
+      <span class="icon">🎲</span> Probability Basics
+      <span class="chevron">▶</span>
+    </div>
+    <div class="section-pages">
+      <div class="page-item" onclick="loadPage('sample-space')">📄 Sample Space & Events <span class="status todo"></span></div>
+      <div class="page-item" onclick="loadPage('axioms')">📄 Axioms of Probability <span class="status todo"></span></div>
+      <div class="page-item" onclick="loadPage('conditional')">📄 Conditional Probability <span class="status todo"></span></div>
+      <div class="page-item" onclick="loadPage('bayes')">📄 Bayes' Theorem <span class="status todo"></span></div>
+    </div>
+
+    <div class="section-item" onclick="toggleSection(this)">
+      <span class="icon">📈</span> Random Variables
+      <span class="chevron">▶</span>
+    </div>
+    <div class="section-pages">
+      <div class="page-item" onclick="loadPage('rv-intro')">📄 PMF, PDF, CDF <span class="status todo"></span></div>
+      <div class="page-item" onclick="loadPage('expectation')">📄 Expectation & Variance <span class="status todo"></span></div>
+      <div class="page-item" onclick="loadPage('distributions')">📄 Standard Distributions <span class="status todo"></span></div>
+    </div>
+
+    <div class="section-item" onclick="toggleSection(this)">
+      <span class="icon">📊</span> Descriptive Statistics
+      <span class="chevron">▶</span>
+    </div>
+    <div class="section-pages">
+      <div class="page-item" onclick="loadPage('central-tendency')">📄 Mean, Median, Mode <span class="status todo"></span></div>
+      <div class="page-item" onclick="loadPage('dispersion')">📄 Variance, SD <span class="status todo"></span></div>
+    </div>
+
+    <!-- ML -->
+    <div class="notebook-item" style="margin-top:16px;">🤖 Machine Learning</div>
+    
+    <div class="section-item" onclick="toggleSection(this)">
+      <span class="icon">📉</span> Regression
+      <span class="chevron">▶</span>
+    </div>
+    <div class="section-pages">
+      <div class="page-item" onclick="loadPage('linear-reg')">📄 Linear Regression <span class="status todo"></span></div>
+      <div class="page-item" onclick="loadPage('ridge-lasso')">📄 Ridge & Lasso <span class="status todo"></span></div>
+    </div>
+
+    <div class="section-item" onclick="toggleSection(this)">
+      <span class="icon">🔲</span> Classification
+      <span class="chevron">▶</span>
+    </div>
+    <div class="section-pages">
+      <div class="page-item" onclick="loadPage('logistic')">📄 Logistic Regression <span class="status todo"></span></div>
+      <div class="page-item" onclick="loadPage('svm')">📄 SVM <span class="status todo"></span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <button onclick="addNewPage()">+ Add New Topic</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════ -->
+<div class="main-area">
+  
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a>Prob & Stats</a>
+      <span class="sep">/</span>
+      <a>Counting</a>
+      <span class="sep">/</span>
+      <span>Overview & Formulas</span>
+    </div>
+    <div class="actions">
+      <div class="mode-toggle">
+        <button class="active" onclick="setMode('organize', this)">📋 Organize</button>
+        <button onclick="setMode('teach', this)">🎓 Teach</button>
+      </div>
+      <button onclick="toggleEditable()">✏️ Edit</button>
+      <button class="primary" onclick="exportPage()">↗ Export</button>
+    </div>
+  </div>
+
+  <!-- Content Body -->
+  <div class="content-body" id="content-body">
+    
+    <h1 class="page-title" contenteditable="true">Distributing Objects into Boxes</h1>
+    <p class="page-subtitle">Counting & Combinatorics — Core Framework for GATE DA</p>
+    
+    <div class="tags">
+      <span class="tag blue">Combinatorics</span>
+      <span class="tag green">Stars & Bars</span>
+      <span class="tag orange">GATE Favourite</span>
+      <span class="tag purple">Rosen Ch.6</span>
+    </div>
+
+    <!-- ─── Concept Block ─── -->
+    <div class="block editable">
+      <span class="block-type concept">Concept</span>
+      <h3 contenteditable="true">The Four Cases Framework</h3>
+      <p contenteditable="true">Every distribution problem falls into one of four cases based on two questions:</p>
+      <ol contenteditable="true">
+        <li><strong>Are the objects distinguishable?</strong> (labeled vs identical)</li>
+        <li><strong>Are the boxes distinguishable?</strong> (labeled vs identical)</li>
+      </ol>
+    </div>
+
+    <!-- ─── Formula Block: 2×2 Grid ─── -->
+    <div class="block">
+      <span class="block-type formula">Formula Sheet</span>
+      <h3>Quick Reference — All Four Cases</h3>
+      <div class="cases-grid">
+        <div class="case-mini c1">
+          <h4>Case 1: Dist. Obj → Dist. Boxes</h4>
+          <div class="formula">$$n^m$$</div>
+          <p class="desc">Each object independently picks a box. (Functions from $m$-set to $n$-set)</p>
+        </div>
+        <div class="case-mini c2">
+          <h4>Case 2: Indist. Obj → Dist. Boxes</h4>
+          <div class="formula">$$\binom{m+n-1}{n-1}$$</div>
+          <p class="desc">Stars & Bars. Non-negative solutions of $x_1+\cdots+x_n=m$</p>
+        </div>
+        <div class="case-mini c3">
+          <h4>Case 3: Dist. Obj → Indist. Boxes</h4>
+          <div class="formula">$$B_m = \sum_{k=1}^{m} S(m,k)$$</div>
+          <p class="desc">Bell numbers / Stirling numbers of the 2nd kind. Set partitions.</p>
+        </div>
+        <div class="case-mini c4">
+          <h4>Case 4: Indist. Obj → Indist. Boxes</h4>
+          <div class="formula">$$p(m)$$</div>
+          <p class="desc">Integer partitions. No closed form — use generating functions or table.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Divider -->
+    <div class="section-divider">Case 1 — Deep Dive</div>
+
+    <!-- ─── Example Block ─── -->
+    <div class="block editable">
+      <span class="block-type example">Example</span>
+      <h3 contenteditable="true">4 different balls → 3 labeled boxes</h3>
+      <p contenteditable="true">Each ball has 3 choices. Total = $3 \times 3 \times 3 \times 3 = 3^4 = 81$</p>
+      <p contenteditable="true"><strong>GATE connection:</strong> This is the same as counting functions from a 4-element set to a 3-element set. Number of functions = $n^m$.</p>
+    </div>
+
+    <div class="section-divider">Case 2 — Stars & Bars</div>
+
+    <!-- ─── Formula Block ─── -->
+    <div class="block editable">
+      <span class="block-type formula">Key Formula</span>
+      <h3 contenteditable="true">Stars and Bars Theorem</h3>
+      <div class="formula-display" contenteditable="true">
+        Non-negative solutions of $x_1 + x_2 + \cdots + x_n = m$: $\quad\displaystyle\binom{m+n-1}{n-1}$
+      </div>
+      <div class="formula-display" contenteditable="true">
+        Positive solutions of $x_1 + x_2 + \cdots + x_n = m$: $\quad\displaystyle\binom{m-1}{n-1}$
+      </div>
+      <p contenteditable="true"><em>Think of $m$ stars and $n-1$ bars. Choose positions for bars among $m+n-1$ total slots.</em></p>
+    </div>
+
+    <!-- ─── GATE PYQ Block ─── -->
+    <div class="block">
+      <span class="block-type gate">GATE PYQ</span>
+      <h3>GATE DA 2026</h3>
+      <p><strong>Q:</strong> The number of solutions of $x_1 + x_2 + x_3 + x_4 = 12$, where $x_1, x_2, x_3, x_4$ are positive integers, is:</p>
+      <p style="margin-top:6px;">(A) 165 &nbsp; (B) 455 &nbsp; (C) 220 &nbsp; (D) 330</p>
+      <details style="margin-top:8px; font-size:0.82rem;">
+        <summary style="cursor:pointer; color:var(--accent); font-weight:600;">Show Solution</summary>
+        <p style="margin-top:6px;">Positive integers → use $\binom{m-1}{n-1} = \binom{12-1}{4-1} = \binom{11}{3} = 165$</p>
+        <p><strong>Answer: (A)</strong></p>
+      </details>
+    </div>
+
+    <!-- ─── Warning Block ─── -->
+    <div class="block editable">
+      <span class="block-type warning">Common Mistake</span>
+      <h3 contenteditable="true">Non-negative vs Positive</h3>
+      <p contenteditable="true">⚠️ Students often confuse:</p>
+      <ul contenteditable="true">
+        <li><strong>Non-negative</strong> ($x_i \geq 0$): Use $\binom{m+n-1}{n-1}$</li>
+        <li><strong>Positive</strong> ($x_i \geq 1$): Use $\binom{m-1}{n-1}$ — substitute $y_i = x_i - 1$</li>
+      </ul>
+    </div>
+
+    <!-- ─── Reference Table ─── -->
+    <div class="block">
+      <span class="block-type concept">Summary Table</span>
+      <h3>Complete Formula Reference</h3>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Formula</th>
+            <th>GATE Frequency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>$n^m$ (functions)</td><td>Dist → Dist</td><td>⭐⭐⭐</td></tr>
+          <tr><td>$\binom{m+n-1}{n-1}$ (stars & bars)</td><td>Indist → Dist (≥0)</td><td>⭐⭐⭐⭐</td></tr>
+          <tr><td>$\binom{m-1}{n-1}$</td><td>Indist → Dist (≥1)</td><td>⭐⭐⭐⭐</td></tr>
+          <tr><td>$n!$ (permutations)</td><td>Arrangements</td><td>⭐⭐⭐</td></tr>
+          <tr><td>$\binom{n}{r}$</td><td>Selections</td><td>⭐⭐⭐⭐⭐</td></tr>
+          <tr><td>$\frac{n!}{n_1! n_2! \cdots n_k!}$</td><td>Multinomial</td><td>⭐⭐</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Add block -->
+    <button class="add-block-btn" onclick="addBlock()">
+      + Add content block (Concept / Formula / Example / PYQ / Warning)
+    </button>
+
+  </div>
+</div>
+
+<script>
+// ─── Sidebar Navigation ───
+function toggleSection(el) {
+  el.classList.toggle('expanded');
+  const pages = el.nextElementSibling;
+  if (pages && pages.classList.contains('section-pages')) {
+    pages.classList.toggle('open');
+  }
+}
+
+function loadPage(slug) {
+  // Highlight active
+  document.querySelectorAll('.page-item').forEach(p => p.classList.remove('active'));
+  event.target.closest('.page-item').classList.add('active');
+  // In production: fetch content from JSON/markdown and render
+  console.log('Loading page:', slug);
+}
+
+function filterNav(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.page-item').forEach(p => {
+    const text = p.textContent.toLowerCase();
+    p.style.display = text.includes(q) ? '' : 'none';
+  });
+  // Show parent sections if child matches
+  document.querySelectorAll('.section-pages').forEach(sp => {
+    const hasVisible = [...sp.querySelectorAll('.page-item')].some(p => p.style.display !== 'none');
+    sp.classList.toggle('open', hasVisible || !q);
+  });
+}
+
+// ─── Content Editing ───
+let isEditable = true; // starts editable
+
+function toggleEditable() {
+  isEditable = !isEditable;
+  document.querySelectorAll('.editable [contenteditable]').forEach(el => {
+    el.contentEditable = isEditable;
+  });
+}
+
+// ─── Mode Toggle ───
+function setMode(mode, btn) {
+  document.querySelectorAll('.mode-toggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  if (mode === 'teach') {
+    // Could open teaching board view
+    window.open('demo-board.html', '_blank');
+  }
+}
+
+// ─── Add New Block ───
+function addBlock() {
+  const types = ['concept', 'formula', 'example', 'gate', 'warning'];
+  const type = prompt('Block type: concept, formula, example, gate, warning');
+  if (!type || !types.includes(type)) return;
+  
+  const block = document.createElement('div');
+  block.className = 'block editable';
+  block.innerHTML = `
+    <span class="block-type ${type}">${type}</span>
+    <h3 contenteditable="true">New ${type} block — click to edit</h3>
+    <p contenteditable="true">Add your content here. Supports $\\LaTeX$ math.</p>
+  `;
+  
+  const addBtn = document.querySelector('.add-block-btn');
+  addBtn.parentNode.insertBefore(block, addBtn);
+  
+  // Re-render math
+  renderMathInElement(block, {
+    delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]
+  });
+}
+
+function addNewPage() {
+  const name = prompt('New topic name:');
+  if (!name) return;
+  // In production: create new page in the content system
+  alert(`Would create: ${name}\n(In full system: creates a new .md file)`);
+}
+
+function exportPage() {
+  // Export current content as printable PDF
+  window.print();
+}
+
+// ─── Render Math ───
+document.addEventListener('DOMContentLoaded', () => {
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false}
+    ]
+  });
+});
+</script>
+</body>
+</html>

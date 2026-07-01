@@ -1,0 +1,237 @@
+/* ═══════════════════════════════════════════════
+   Ranjan's Notebook — Mode-specific styles
+   ═══════════════════════════════════════════════ */
+
+/* ─── Edit Mode ─── */
+.editing-active .block {
+  cursor: text;
+}
+.editing-active [contenteditable="true"]:focus {
+  background: rgba(79, 110, 247, 0.02);
+  border-radius: 3px;
+}
+
+/* ─── Teach Mode (split: content | canvas) ─── */
+.teach-mode .page-content { max-width: none; }
+
+/* Teach navigation bar */
+.teach-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 10;
+}
+.teach-counter {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: center;
+}
+.teach-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* Canvas toolbar (pen colors etc) */
+.canvas-toolbar {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  z-index: 10;
+  flex-wrap: wrap;
+  max-width: 96%;
+}
+.canvas-toolbar-secondary {
+  top: 50px;
+  border-radius: 14px;
+  padding: 5px 14px;
+  gap: 8px;
+}
+.canvas-toolbar .color-dot {
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.1s;
+}
+.canvas-toolbar .color-dot:hover { transform: scale(1.2); }
+.canvas-toolbar .color-dot.active { border-color: var(--text-primary); }
+.canvas-toolbar .sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 2px;
+}
+.canvas-toolbar .btn.active,
+.canvas-toolbar .tool-btn.active {
+  background: var(--accent);
+  color: white;
+}
+.canvas-toolbar .tool-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.canvas-toolbar .tool-btn:hover {
+  background: var(--bg);
+  color: var(--text-primary);
+}
+.canvas-toolbar .tool-btn.active {
+  background: var(--accent);
+  color: white;
+}
+.canvas-toolbar .tool-btn svg {
+  flex-shrink: 0;
+}
+.canvas-toolbar .stroke-slider {
+  width: 55px;
+  height: 3px;
+  -webkit-appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+}
+.canvas-toolbar .stroke-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.toolbar-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.toolbar-select {
+  font-size: 0.72rem;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+}
+.toolbar-select:focus { border-color: var(--accent); }
+.toolbar-number {
+  width: 42px;
+  font-size: 0.72rem;
+  padding: 2px 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-primary);
+  text-align: center;
+  outline: none;
+}
+.toolbar-number:focus { border-color: var(--accent); }
+
+/* ─── Teach Mode Block Cards (colored backgrounds like demo-board) ─── */
+.teach-content .block[data-type="concept"] {
+  background: #dbeafe;
+  border-left: 4px solid #3b82f6;
+  border-color: #3b82f6;
+}
+.teach-content .block[data-type="formula"] {
+  background: #f3e8ff;
+  border-left: 4px solid #a855f7;
+  border-color: #a855f7;
+}
+.teach-content .block[data-type="example"] {
+  background: #dcfce7;
+  border-left: 4px solid #10b981;
+  border-color: #10b981;
+}
+.teach-content .block[data-type="warning"] {
+  background: #fee2e2;
+  border-left: 4px solid #ef4444;
+  border-color: #ef4444;
+}
+.teach-content .block[data-type="gate"] {
+  background: #fef9c3;
+  border-left: 4px solid #f59e0b;
+  border-color: #f59e0b;
+}
+.teach-content .block[data-type="note"] {
+  background: #f1f5f9;
+  border-left: 4px solid #64748b;
+  border-color: #64748b;
+}
+.teach-content .block {
+  border-radius: 10px;
+  padding: 14px 16px;
+  transition: transform 0.2s, opacity 0.3s;
+}
+.teach-content .block:hover {
+  transform: translateX(3px);
+}
+.teach-content .formula-display {
+  background: white;
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* ─── Focus/Spotlight in Teach ─── */
+.teach-content.spotlight .block {
+  opacity: 0.15;
+  filter: blur(1px);
+  transform: scale(0.98);
+  transition: all 0.3s ease;
+}
+.teach-content.spotlight .block.active {
+  opacity: 1;
+  filter: none;
+  transform: scale(1);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ─── Full Board button active state ─── */
+.btn.full-board-active {
+  background: var(--accent) !important;
+  color: white !important;
+}
+
+/* ─── Canvas inline text input ─── */
+.canvas-text-input {
+  position: absolute;
+  z-index: 30;
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  background: rgba(255,255,255,0.9);
+  outline: none;
+  min-width: 150px;
+  padding: 4px 6px;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.canvas-text-input::placeholder {
+  color: rgba(0,0,0,0.3);
+}

@@ -1,0 +1,180 @@
+/* ═══════════════════════════════════════════════
+   Ranjan's Notebook — Base (reset, vars, typo)
+   ═══════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Layout */
+  --sidebar-w: 260px;
+  --toolbar-h: 44px;
+
+  /* Colors — Light */
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --sidebar-bg: #1c1c2e;
+  --sidebar-text: #c4c8d4;
+  --sidebar-hover: #28283e;
+  --sidebar-active: #343454;
+
+  --text-primary: #1a1a2e;
+  --text-secondary: #5f6577;
+  --text-muted: #9ca3af;
+
+  --accent: #4f6ef7;
+  --accent-hover: #3b5ce4;
+  --accent-light: #eef2ff;
+  --green: #22c55e;
+  --orange: #f59e0b;
+  --red: #ef4444;
+  --purple: #8b5cf6;
+
+  --border: #e4e7ec;
+  --border-light: #f0f1f4;
+  --radius: 8px;
+  --radius-sm: 5px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+/* Typography */
+h1 { font-size: 1.5rem; font-weight: 700; }
+h2 { font-size: 1.15rem; font-weight: 700; }
+h3 { font-size: 0.95rem; font-weight: 600; }
+
+/* Utilities */
+.hidden { display: none !important; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Buttons */
+button { font-family: inherit; cursor: pointer; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-primary);
+  transition: all 0.12s ease;
+  white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+.btn.primary:hover { background: var(--accent-hover); }
+.btn.ghost { border-color: transparent; background: transparent; }
+.btn.ghost:hover { background: var(--accent-light); }
+.btn.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.btn.sm { padding: 3px 7px; font-size: 0.72rem; }
+.btn.danger { color: var(--red); }
+.btn.danger:hover { background: #fef2f2; border-color: var(--red); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  z-index: 9999;
+  animation: slideUp 0.25s ease;
+}
+.toast.success { background: var(--green); }
+.toast.info { background: var(--accent); }
+.toast.error { background: var(--red); }
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ─── Modal ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+.modal-overlay.visible {
+  display: flex;
+}
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  width: 380px;
+  max-width: 90vw;
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--border);
+  animation: modalIn 0.15s ease;
+}
+@keyframes modalIn {
+  from { transform: scale(0.95) translateY(-8px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+.modal-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+.modal-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.modal-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.1);
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+.modal-cancel {
+  background: transparent;
+  border-color: var(--border);
+}
+.modal-ok {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.modal-ok:hover {
+  background: var(--accent-hover);
+}
